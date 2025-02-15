@@ -17,14 +17,14 @@ Install this package:
 pak::pak("eliocamp/rhelpi18n")
 ```
 
-Next install a translation module. 
+Next, install a translation module. 
 The [base.es](https://github.com/eliocamp/base.es) package hosts translations for `base::mean()` as an example, install it with
 
 ``` r
 pak::pak("eliocamp/base.es")
 ```
 
-Setting the LANGAUGE environmental variable to "es" will change your R language. 
+Setting the LANGUAGE environmental variable to "es" will change your R language. 
 
 ```r
 library(rhelpi18n)
@@ -42,18 +42,18 @@ This will work with the HTML documentation displayed by R GUIs like RStudio, as 
 
 ## For package developers
 
-First get a copy of the package you want to translate. 
+First, clone the code of the package you want to translate. 
 
 Choose your translation **language** by its [ISO 2-letter code](https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes) eventually with a regional option using underscore:
 
-or example Spanish would be `language = "es"`, and Argentine Spanish would be `language = "es_AR"`.
+for example Spanish would be `language = "es"`, and Argentine Spanish would be `language = "es_AR"`.
 
 Then use `rhelpi18n::i18n_module_create()` to create a **lang** translation **module** for that **package**
 
 
 ```r
 rhelpi18n::i18n_module_create(module_name = "package.lang", 
-                              language = "lang", 
+                              language = language, 
                               module_path = "path/to/module", 
                               package_path = "path/to/package")
 ```
@@ -85,9 +85,9 @@ title:
   translation: Título en la lengua original
 ```
 
-**Problems**
+**Known Problems**
 
 1. It's not clear that the page is a translation and not the "official" one. 
 2. It's not possible to access the original documentation without changing the LANGUAGE environmental variable and opening the help page again. 
 3. There are some formatting issues, such as the `...` argument name. 
-
+4. Backslash in the text shall be manually doubled. I.e. ` \verb{\\}` shall be translated into ` \verb{\\\\}`
