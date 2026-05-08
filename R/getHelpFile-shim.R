@@ -19,3 +19,14 @@
 
   return(rd)
 }
+
+
+add_translation_modues <- function(package) {
+  modules <- lapply(package, rhelpi18n:::get_translation_modules,  language = Sys.getenv("LANGUAGE", "en"))
+
+  for (p in rev(seq_along(package))) {
+    package <- append(package, modules[[p]], after = p - 1)
+  }
+
+  return(package)
+}

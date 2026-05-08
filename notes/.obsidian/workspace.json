@@ -8,18 +8,6 @@
         "type": "tabs",
         "children": [
           {
-            "id": "b849d3f6304e5bdc",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "`help()` annotated.md",
-                "mode": "source",
-                "source": false
-              }
-            }
-          },
-          {
             "id": "537e9004cf127da0",
             "type": "leaf",
             "state": {
@@ -28,7 +16,22 @@
                 "file": "`print.help_files_with_topic()` annotated.md",
                 "mode": "source",
                 "source": false
-              }
+              },
+              "icon": "lucide-file",
+              "title": "`print.help_files_with_topic()` annotated"
+            }
+          },
+          {
+            "id": "b849d3f6304e5bdc",
+            "type": "leaf",
+            "state": {
+              "type": "bases",
+              "state": {
+                "file": "Untitled.base",
+                "viewName": "Table"
+              },
+              "icon": "lucide-table",
+              "title": "Untitled"
             }
           },
           {
@@ -40,7 +43,9 @@
                 "file": "`print.help_files_with_topic()` annotated.md",
                 "mode": "source",
                 "source": false
-              }
+              },
+              "icon": "lucide-file",
+              "title": "`print.help_files_with_topic()` annotated"
             }
           },
           {
@@ -52,7 +57,9 @@
                 "file": "Dynamic Help.md",
                 "mode": "source",
                 "source": false
-              }
+              },
+              "icon": "lucide-file",
+              "title": "Dynamic Help"
             }
           },
           {
@@ -61,14 +68,16 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "`help()` annotated.md",
+                "file": "`print.help_files_with_topic()` annotated.md",
                 "mode": "source",
                 "source": false
-              }
+              },
+              "icon": "lucide-file",
+              "title": "`print.help_files_with_topic()` annotated"
             }
           }
         ],
-        "currentTab": 4
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -87,8 +96,11 @@
             "state": {
               "type": "file-explorer",
               "state": {
-                "sortOrder": "alphabetical"
-              }
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
             }
           },
           {
@@ -103,7 +115,9 @@
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical"
-              }
+              },
+              "icon": "lucide-search",
+              "title": "Search"
             }
           },
           {
@@ -111,7 +125,9 @@
             "type": "leaf",
             "state": {
               "type": "bookmarks",
-              "state": {}
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
             }
           }
         ]
@@ -134,7 +150,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "`help()` annotated.md",
+                "file": "Untitled.base",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -142,7 +158,9 @@
                 "searchQuery": "",
                 "backlinkCollapsed": false,
                 "unlinkedCollapsed": true
-              }
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for Untitled"
             }
           },
           {
@@ -154,7 +172,9 @@
                 "file": "`help()` annotated.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
-              }
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from `help()` annotated"
             }
           },
           {
@@ -164,8 +184,12 @@
               "type": "tag",
               "state": {
                 "sortOrder": "frequency",
-                "useHierarchy": true
-              }
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
             }
           },
           {
@@ -174,8 +198,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "`help()` annotated.md"
-              }
+                "file": "`help()` annotated.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of `help()` annotated"
             }
           }
         ]
@@ -186,6 +215,7 @@
   },
   "left-ribbon": {
     "hiddenItems": {
+      "bases:Create new base": false,
       "switcher:Open quick switcher": false,
       "graph:Open graph view": false,
       "canvas:Create new canvas": false,
@@ -194,15 +224,16 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "351898db9b607d54",
+  "active": "b849d3f6304e5bdc",
   "lastOpenFiles": [
-    "rd-flattening.Rmd",
+    "`help()` annotated.md",
+    "Untitled.base",
+    "`index.search()` annotated.md",
     "`print.help_files_with_topic()` annotated.md",
+    "rd-flattening.Rmd",
     "Dynamic Help.md",
     "translate-rd.Rmd",
     "How the help server works.md",
-    "`index.search()` annotated.md",
-    "`help()` annotated.md",
     "internationalisation.jpg",
     "internationalisation.svg",
     "resources.md",

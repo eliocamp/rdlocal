@@ -1,6 +1,6 @@
 https://github.com/r-devel/r-svn/blob/7443ac74ccaa5e780273b1eb308eaf4b7a7e89f4/src/library/utils/R/help.R#L91
 
- ```r
+```r
 print.help_files_with_topic <- function(x, ...) {
 ```
 

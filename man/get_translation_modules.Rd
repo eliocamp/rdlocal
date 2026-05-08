@@ -4,7 +4,7 @@
 \alias{get_translation_modules}
 \title{Gets translation modules}
 \usage{
-get_translation_modules(package, language)
+get_translation_modules(package, language = Sys.getenv("LANGUAGE", "en"))
 }
 \arguments{
 \item{package}{character string with the name of the package}
