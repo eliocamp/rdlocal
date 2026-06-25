@@ -34,7 +34,8 @@ translate <- function(original, translation) {
       # against the stored scaffold as a template, captures the live values, and
       # substitutes them into the translation. With no tokens it is an exact match,
       # so existing modules behave exactly as before.
-      filled <- if (!is.null(trans)) match_and_fill(live, stored, trans) else NULL
+      filled <- if (!is.null(trans)) match_and_fill(live, stored, trans,
+                                                    translation[[section]]$ifdef) else NULL
 
       if (!is.null(filled)) {
         if (section %in% c("examples", "title")) {
@@ -69,7 +70,7 @@ translate <- function(original, translation) {
 # multi-line baked output works); the gaps are the captured live values, which are
 # substituted into the matching {ISEXPR_i} in the translation.
 # Returns the filled translation, or NULL if the scaffold does not match.
-match_and_fill <- function(live, stored, translation) {
+match_and_fill <- function(live, stored, translation, ifdef = NULL) {
   if (is.null(stored) || is.null(translation)) {
     return(NULL)
   }
@@ -114,7 +115,17 @@ match_and_fill <- function(live, stored, translation) {
 
   out <- translation
   for (k in seq_along(idx)) {
-    out <- gsub(paste0("{ISEXPR_", idx[k], "}"), values[k], out, fixed = TRUE)
+    val <- values[k]
+    key <- as.character(idx[k])
+    # An #ifdef token whose live value is the active branch (not R's
+    # "#ifdef <cond> not active" marker) is replaced by its stored branch
+    # translation; an inactive branch keeps the (invisible) marker, and a plain
+    # install/build span keeps its captured value (passthrough).
+    if (!is.null(ifdef) && key %in% names(ifdef) &&
+        !grepl("^#if(n?)def .* not active", val)) {
+      val <- ifdef[[key]]
+    }
+    out <- gsub(paste0("{ISEXPR_", idx[k], "}"), val, out, fixed = TRUE)
   }
   out
 }
