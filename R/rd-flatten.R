@@ -95,6 +95,13 @@ to_text <- function(x) {
   if (length(x) == 0) {
     return("")
   }
+  # A USERMACRO node is a provenance marker that holds a copy of the macro's
+  # (unsubstituted) body; the actual expansion follows as sibling nodes. Emitting
+  # the marker too would duplicate the expansion (e.g. "GSoCGSoC") and leak raw
+  # "#1" args, so skip it.
+  if (identical(tag, "USERMACRO")) {
+    return("")
+  }
   if (is.character(x) || !is.null(tag) && !startsWith(tag, "\\")) {
     return(x[[1]])
   }
