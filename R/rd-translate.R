@@ -64,14 +64,16 @@ translate <- function(original, translation) {
 
 # Match a live (baked) section string against a stored scaffold template and fill
 # the translation. The scaffold may contain {ISEXPR_i} placeholders for dynamic
-# (install/build-Sexpr) spans; each becomes a capture group, and the captured live
-# value is substituted into the matching {ISEXPR_i} in the translation.
-# Returns the filled translation, or NULL if it does not match.
+# (install/build-Sexpr) spans. The literal text between tokens is matched against
+# `live` by fixed-string search (no regex escaping, and it spans newlines, so
+# multi-line baked output works); the gaps are the captured live values, which are
+# substituted into the matching {ISEXPR_i} in the translation.
+# Returns the filled translation, or NULL if the scaffold does not match.
 match_and_fill <- function(live, stored, translation) {
   if (is.null(stored) || is.null(translation)) {
     return(NULL)
   }
-  tok_re <- "\\{ISEXPR_([0-9]+)\\}"
+  tok_re <- "\\{ISEXPR_[0-9]+\\}"
 
   # No placeholders -> plain exact-match (backward compatible).
   if (!grepl(tok_re, stored)) {
@@ -81,20 +83,34 @@ match_and_fill <- function(live, stored, translation) {
     return(NULL)
   }
 
-  esc <- function(x) gsub("([][{}()*+?.\\\\^$|])", "\\\\\\1", x, perl = TRUE)
   toks <- regmatches(stored, gregexpr(tok_re, stored))[[1]]
-  idx  <- as.integer(sub(tok_re, "\\1", toks))
-  lits <- strsplit(stored, tok_re, perl = TRUE)[[1]]
-  if (length(lits) < length(toks) + 1) {
-    lits <- c(lits, rep("", length(toks) + 1 - length(lits)))
+  idx  <- as.integer(sub("\\{ISEXPR_([0-9]+)\\}", "\\1", toks))
+  n    <- length(toks)
+  anchors <- strsplit(stored, tok_re)[[1]]            # n+1 literal anchors
+  if (length(anchors) < n + 1L) {
+    anchors <- c(anchors, rep("", n + 1L - length(anchors)))  # strsplit drops trailing ""
   }
-  re <- paste0("^", paste0(vapply(lits, esc, character(1)), collapse = "(.*?)"), "$")
 
-  caps <- regmatches(live, regexec(re, live, perl = TRUE))[[1]]
-  if (length(caps) == 0) {
+  # Boundary anchors are pinned to the ends; interior anchors split sequentially.
+  if (!startsWith(live, anchors[1])) {
+    return(NULL)
+  }
+  rem <- substr(live, nchar(anchors[1]) + 1L, nchar(live))
+  values <- character(n)
+  if (n >= 2L) {
+    for (k in 1:(n - 1L)) {
+      a <- anchors[k + 1L]
+      if (nchar(a) == 0) { values[k] <- ""; next }    # adjacent tokens, no separator
+      p <- regexpr(a, rem, fixed = TRUE)
+      if (p == -1) return(NULL)
+      values[k] <- substr(rem, 1, p - 1)
+      rem <- substr(rem, p + nchar(a), nchar(rem))
+    }
+  }
+  if (!endsWith(rem, anchors[n + 1L])) {
     return(NULL)  # scaffold did not match (genuine version drift)
   }
-  values <- caps[-1]
+  values[n] <- substr(rem, 1, nchar(rem) - nchar(anchors[n + 1L]))
 
   out <- translation
   for (k in seq_along(idx)) {
