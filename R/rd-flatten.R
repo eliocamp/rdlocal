@@ -102,7 +102,10 @@ to_text <- function(x) {
   if (identical(tag, "USERMACRO")) {
     return("")
   }
-  if (is.character(x) || !is.null(tag) && !startsWith(tag, "\\")) {
+  # #ifdef / #ifndef are two-argument list nodes; deparse them (like markup
+  # macros) instead of returning x[[1]], which is a list and errored.
+  is_ifdef <- !is.null(tag) && tag %in% c("#ifdef", "#ifndef")
+  if (!is_ifdef && (is.character(x) || !is.null(tag) && !startsWith(tag, "\\"))) {
     return(x[[1]])
   }
   text <- as.character(setRd(x), deparse = TRUE)
