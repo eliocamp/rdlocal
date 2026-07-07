@@ -100,7 +100,9 @@ install_with_translation <- function(pkg, language, translate = NULL,
   say("built scaffolds for ", length(translations), " / ", length(topics), " topics",
       if (length(skipped)) paste0(" (skipped ", length(skipped), ")") else "")
 
-  module <- paste0(pkg, ".", language)
+  # A package name can't contain "-" (or other non-alphanumerics), so a locale
+  # like "en-GB" becomes "pkg.en.GB"; the real tag is kept in the Language field.
+  module <- paste0(pkg, ".", gsub("[^[:alnum:]]+", ".", language))
   moddir <- file.path(tempfile("i18nmod"), module)
   dir.create(file.path(moddir, "R"), recursive = TRUE, showWarnings = FALSE)
   dir.create(file.path(moddir, "inst", "translations"), recursive = TRUE, showWarnings = FALSE)
