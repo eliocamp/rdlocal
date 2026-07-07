@@ -6,25 +6,28 @@
 # gap in the flattened baked help is the dynamic value. Used by
 # install_with_translation().
 
-.def <- function(x, d) if (is.null(x)) d else x
-
 # Collect non-render \Sexpr and #ifdef/#ifndef nodes (opaque dynamic spans), in
 # document order. `marker` is the node's exact deparse (== how it appears in the
 # flattened source). Dynamic nodes are opaque: we do not recurse into them.
 .collect_sexpr_markers <- function(node, acc = list()) {
-  tag <- attr(node, "Rd_tag")
-  if (identical(tag, "\\Sexpr") &&
-      !isTRUE(grepl("stage=render", .def(attr(node, "Rd_option"), "")))) {
-    acc[[length(acc) + 1L]] <- list(
-      marker = to_text(node), kind = "sexpr",
-      option = .def(attr(node, "Rd_option"), ""),
-      code   = trimws(paste(rapply(node, as.character, how = "unlist"), collapse = "")))
+  tag    <- attr(node, "Rd_tag")
+  option <- attr(node, "Rd_option") %||% ""
+
+  is_sexpr        <- identical(tag, "\\Sexpr")
+  is_render_sexpr <- is_sexpr && grepl("stage=render", option)
+  is_ifdef        <- !is.null(tag) && tag %in% c("#ifdef", "#ifndef")
+
+  # a record describing this dynamic node (its deparse is the search marker)
+  record <- function(kind, option) list(
+    marker = to_text(node), kind = kind, option = option,
+    code   = trimws(paste(rapply(node, as.character, how = "unlist"), collapse = "")))
+
+  if (is_sexpr && !is_render_sexpr) {
+    acc[[length(acc) + 1L]] <- record("sexpr", option)
     return(acc)
   }
-  if (!is.null(tag) && tag %in% c("#ifdef", "#ifndef")) {
-    acc[[length(acc) + 1L]] <- list(
-      marker = to_text(node), kind = "ifdef", option = tag,
-      code   = trimws(paste(rapply(node, as.character, how = "unlist"), collapse = "")))
+  if (is_ifdef) {
+    acc[[length(acc) + 1L]] <- record("ifdef", tag)
     return(acc)
   }
   if (is.list(node)) for (child in node) acc <- .collect_sexpr_markers(child, acc)
