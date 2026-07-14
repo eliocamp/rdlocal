@@ -73,9 +73,31 @@ translate <- function(original, translation) {
 # braces, `{{ISEXPR_n}}`. Such literals are hidden behind sentinels before any token
 # work (so only real, single-brace placeholders are matched) and restored as a
 # single-brace literal in the output.
-match_and_fill <- function(live, stored, translation, ifdef = NULL) {
+match_and_fill <- function(live, stored, translation, ifdef = NULL,
+                           details = FALSE) {
+  tok_re  <- "\\{ISEXPR_[0-9]+\\}"
+  stored0 <- stored   # original scaffold, kept for the optional status metadata
+
+  # Default: return the bare string (unchanged). details = TRUE instead returns
+  # list(text, reason, distance):
+  #   reason   "valid"        scaffold matched, translation applied
+  #            "stale"        a translation exists but `live` drifted from it
+  #            "untranslated" no translation to apply
+  #   distance 0 for "valid"; a coarse Levenshtein drift of `live` from the
+  #            scaffold skeleton for "stale"; NA otherwise. Nothing here reads
+  #            these — forward-looking metadata for a future soft-fallback / tool.
+  finish <- function(text, reason) {
+    if (!details) return(text)
+    skeleton <- if (is.null(stored0)) "" else gsub(tok_re, "", stored0)
+    distance <- switch(reason,
+                       valid = 0L,
+                       stale = as.integer(utils::adist(live, skeleton)[1, 1]),
+                       NA_integer_)
+    list(text = text, reason = reason, distance = distance)
+  }
+
   if (is.null(stored) || is.null(translation)) {
-    return(live)
+    return(finish(live, "untranslated"))
   }
 
   hide   <- function(s) gsub("\\{\\{(ISEXPR_[0-9]+)\\}\\}", "\x01\\1\x02", s)
@@ -83,14 +105,12 @@ match_and_fill <- function(live, stored, translation, ifdef = NULL) {
   stored      <- hide(stored)
   translation <- hide(translation)
 
-  tok_re <- "\\{ISEXPR_[0-9]+\\}"
-
   # No placeholders -> plain exact-match (backward compatible).
   if (!grepl(tok_re, stored)) {
     if (identical(live, reveal(stored))) {
-      return(reveal(translation))
+      return(finish(reveal(translation), "valid"))
     }
-    return(live)
+    return(finish(live, "stale"))
   }
 
   toks <- regmatches(stored, gregexpr(tok_re, stored))[[1]]
@@ -104,7 +124,7 @@ match_and_fill <- function(live, stored, translation, ifdef = NULL) {
 
   # Boundary anchors are pinned to the ends; interior anchors split sequentially.
   if (!startsWith(live, anchors[1])) {
-    return(live)
+    return(finish(live, "stale"))
   }
   rem <- substr(live, nchar(anchors[1]) + 1L, nchar(live))
   values <- character(n)
@@ -113,13 +133,13 @@ match_and_fill <- function(live, stored, translation, ifdef = NULL) {
       a <- anchors[k + 1L]
       if (nchar(a) == 0) { values[k] <- ""; next }    # adjacent tokens, no separator
       p <- regexpr(a, rem, fixed = TRUE)
-      if (p == -1) return(live)
+      if (p == -1) return(finish(live, "stale"))
       values[k] <- substr(rem, 1, p - 1)
       rem <- substr(rem, p + nchar(a), nchar(rem))
     }
   }
   if (!endsWith(rem, anchors[n + 1L])) {
-    return(live)  # scaffold did not match (genuine version drift)
+    return(finish(live, "stale"))  # scaffold did not match (genuine version drift)
   }
   values[n] <- substr(rem, 1, nchar(rem) - nchar(anchors[n + 1L]))
 
@@ -137,6 +157,6 @@ match_and_fill <- function(live, stored, translation, ifdef = NULL) {
     }
     out <- gsub(paste0("{ISEXPR_", idx[k], "}"), val, out, fixed = TRUE)
   }
-  reveal(out)
+  finish(reveal(out), "valid")
 }
 
