@@ -67,16 +67,28 @@ translate <- function(original, translation) {
 # Returns the filled translation, or `live` unchanged if the scaffold does not
 # match (missing translation, or genuine version drift) — so the caller can use
 # the result directly with no NULL check.
+#
+# A *literal* placeholder-shaped string (which reaches the flattened help only via
+# Rd-escaped braces, `\{ISEXPR_n\}`) is authored in the stored strings with doubled
+# braces, `{{ISEXPR_n}}`. Such literals are hidden behind sentinels before any token
+# work (so only real, single-brace placeholders are matched) and restored as a
+# single-brace literal in the output.
 match_and_fill <- function(live, stored, translation, ifdef = NULL) {
   if (is.null(stored) || is.null(translation)) {
     return(live)
   }
+
+  hide   <- function(s) gsub("\\{\\{(ISEXPR_[0-9]+)\\}\\}", "\x01\\1\x02", s)
+  reveal <- function(s) gsub("\x02", "}", gsub("\x01", "{", s, fixed = TRUE), fixed = TRUE)
+  stored      <- hide(stored)
+  translation <- hide(translation)
+
   tok_re <- "\\{ISEXPR_[0-9]+\\}"
 
   # No placeholders -> plain exact-match (backward compatible).
   if (!grepl(tok_re, stored)) {
-    if (identical(live, stored)) {
-      return(translation)
+    if (identical(live, reveal(stored))) {
+      return(reveal(translation))
     }
     return(live)
   }
@@ -88,6 +100,7 @@ match_and_fill <- function(live, stored, translation, ifdef = NULL) {
   if (length(anchors) < n + 1L) {
     anchors <- c(anchors, rep("", n + 1L - length(anchors)))  # strsplit drops trailing ""
   }
+  anchors <- reveal(anchors)   # a literal {ISEXPR_n} in an anchor matches the live text
 
   # Boundary anchors are pinned to the ends; interior anchors split sequentially.
   if (!startsWith(live, anchors[1])) {
@@ -124,6 +137,6 @@ match_and_fill <- function(live, stored, translation, ifdef = NULL) {
     }
     out <- gsub(paste0("{ISEXPR_", idx[k], "}"), val, out, fixed = TRUE)
   }
-  out
+  reveal(out)
 }
 
