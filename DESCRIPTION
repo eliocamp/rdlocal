@@ -13,8 +13,10 @@ RoxygenNote: 7.3.2
 Depends: 
     R (>= 4.3.0),
     utils
-Imports: 
+Imports:
     pkgload,
     yaml,
     whisker
+Suggests:
+    testit
 URL: https://eliocamp.github.io/rhelpi18n/
