@@ -35,7 +35,7 @@ translate <- function(original, translation) {
       # substitutes them into the translation. With no tokens it is an exact match,
       # so existing modules behave exactly as before. When no translation applies
       # (missing, or an out-of-date scaffold) it returns `live` unchanged.
-      filled <- match_and_fill(live, stored, trans, translation[[section]]$ifdef)
+      filled <- match_and_fill(live, stored, trans, translation[[section]]$ifdef)$text
 
       # examples/title that were actually translated show the original collapsed
       # behind a disclosure; an untranslated section is just `live`.
@@ -73,26 +73,24 @@ translate <- function(original, translation) {
 # braces, `{{ISEXPR_n}}`. Such literals are hidden behind sentinels before any token
 # work (so only real, single-brace placeholders are matched) and restored as a
 # single-brace literal in the output.
-match_and_fill <- function(live, stored, translation, ifdef = NULL,
-                           details = FALSE) {
+match_and_fill <- function(live, stored, translation, ifdef = NULL) {
   tok_re  <- "\\{ISEXPR_[0-9]+\\}"
-  stored0 <- stored   # original scaffold, kept for the optional status metadata
+  stored0 <- stored   # original scaffold, kept for the status metadata
 
-  # Default: return the bare string (unchanged). details = TRUE instead returns
-  # list(text, reason, distance):
+  # Always returns list(text, reason, distance). Callers currently read only
+  # `text`; reason/distance are non-read metadata for a future soft-fallback / tool.
   #   reason   "valid"        scaffold matched, translation applied
   #            "stale"        a translation exists but `live` drifted from it
   #            "untranslated" no translation to apply
   #   distance 0 for "valid"; a coarse Levenshtein drift of `live` from the
-  #            scaffold skeleton for "stale"; NA otherwise. Nothing here reads
-  #            these — forward-looking metadata for a future soft-fallback / tool.
+  #            scaffold skeleton for "stale"; Inf when there is no translation
+  #            (so 0 / finite / Inf all compare numerically).
   finish <- function(text, reason) {
-    if (!details) return(text)
     skeleton <- if (is.null(stored0)) "" else gsub(tok_re, "", stored0)
     distance <- switch(reason,
-                       valid = 0L,
-                       stale = as.integer(utils::adist(live, skeleton)[1, 1]),
-                       NA_integer_)
+                       valid = 0,
+                       stale = as.numeric(utils::adist(live, skeleton)[1, 1]),
+                       Inf)
     list(text = text, reason = reason, distance = distance)
   }
 
