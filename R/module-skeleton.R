@@ -6,7 +6,9 @@
 #' installed help across reinstalls (an install-stage `\Sexpr` bakes a different
 #' value each install, which the plain [i18n_module_create()] template can never
 #' match). The translator fills in the `translation:` fields and leaves the
-#' `{ISEXPR_i}` tokens in place.
+#' `{ISEXPR_i}` tokens in place. Each section also carries a `spans:` map showing
+#' an example of what each token held at generation time (the real value differs
+#' per install), so the translator knows what a `{ISEXPR_i}` stands for.
 #'
 #' Locating the spans needs both the *source* Rd (dynamic nodes still live) and
 #' the *baked* Rd (values resolved). The source is taken from `package_path`; the
@@ -84,13 +86,22 @@ baked_rd_db <- function(package_path, package) {
 }
 
 # detect_scaffolds() output -> the per-topic template structure:
-#   section -> { original = <scaffold>, translation = ~ [, ifdef = { i: "" } ] }
-# recursing into \arguments (a named list of per-item entries). A blank `ifdef`
-# side-table is emitted for any section that has #ifdef spans, for the translator
-# to fill per branch.
+#   section -> { original = <scaffold>, translation = ~,
+#                spans = { i: <example baked value> } [, ifdef = { i: "" } ] }
+# recursing into \arguments (a named list of per-item entries). `spans` shows the
+# translator what each {ISEXPR_i} held at generation time; a blank `ifdef`
+# side-table is emitted for any section that has #ifdef spans, to fill per branch.
 scaffold_template <- function(sca) {
   conv1 <- function(node) {
     entry <- list(original = node$scaffold, translation = NULL)
+    # Show translators what each {ISEXPR_i} stands for: an example of the value
+    # baked at generation time (the real value differs per install). Keyed by
+    # token index, mirroring the ifdef side-table below.
+    if (length(node$spans)) {
+      entry$spans <- stats::setNames(
+        lapply(node$spans, function(s) s$baked_value),
+        vapply(node$spans, function(s) as.character(s$i), character(1)))
+    }
     ifdef_i <- unlist(lapply(node$spans, function(s)
       if (identical(s$kind, "ifdef")) s$i else NULL))
     if (length(ifdef_i)) {

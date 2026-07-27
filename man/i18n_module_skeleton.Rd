@@ -35,7 +35,9 @@ dynamic install/build \verb{\\Sexpr} (and \verb{#ifdef}/\verb{#ifndef}) spans ar
 installed help across reinstalls (an install-stage \verb{\\Sexpr} bakes a different
 value each install, which the plain \code{\link[=i18n_module_create]{i18n_module_create()}} template can never
 match). The translator fills in the \verb{translation:} fields and leaves the
-\code{{ISEXPR_i}} tokens in place.
+\code{{ISEXPR_i}} tokens in place. Each section also carries a \verb{spans:} map showing
+an example of what each token held at generation time (the real value differs
+per install), so the translator knows what a \code{{ISEXPR_i}} stands for.
 }
 \details{
 Locating the spans needs both the \emph{source} Rd (dynamic nodes still live) and
