@@ -1,0 +1,128 @@
+---
+title: "Reading help in your language"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Reading help in your language}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(eval = FALSE, comment = "#>")
+```
+
+This guide is for **R users** who would rather read documentation in their own
+language. Nothing here changes how your code runs — only what `?function` shows.
+
+## The whole thing in four lines
+
+```{r}
+remotes::install_github("adit-0132/rhelpi18n@dynamic-sexpr")  # 1. the engine
+remotes::install_github("SOMEONE/gsocproposal.es")            # 2. a translation
+# 3. RESTART R
+Sys.setenv(LANGUAGE = "es"); library(rhelpi18n); ?greet       # 4. read it
+```
+
+The rest explains each step.
+
+## 1. Install the engine
+
+**rhelpi18n** makes R look for a translation whenever you open a help page.
+Install it once.
+
+```{r}
+install.packages("remotes")
+remotes::install_github("adit-0132/rhelpi18n@dynamic-sexpr")
+```
+
+(Until merged upstream, use the `@dynamic-sexpr` branch; afterwards just
+`remotes::install_github("eliocamp/rhelpi18n")`.)
+
+## 2. Install the package and a translation
+
+```{r}
+install.packages("gsocproposal")                    # the package (however you normally would)
+remotes::install_github("SOMEONE/gsocproposal.es")  # a Spanish translation module
+```
+
+Translations ship as their own small packages, usually named
+`<package>.<language>`. Install as many as you like — one per language, or for
+different packages; they don't conflict. If none exists for your package and
+language, you simply keep seeing English — nothing breaks.
+
+## 3. Choose your language
+
+R uses the `LANGUAGE` environment variable. There is no `Sys.setlanguage()` in
+base R — you set the variable directly.
+
+```{r}
+# this session only:
+Sys.setenv(LANGUAGE = "es")
+
+# permanently: add a line to ~/.Renviron, then restart R
+usethis::edit_r_environ()   # add:  LANGUAGE=es
+```
+
+| Language | `LANGUAGE` |
+|---|---|
+| Spanish | `es` |
+| French | `fr` |
+| Brazilian Portuguese | `pt_BR` |
+| Simplified Chinese | `zh_CN` |
+| Traditional Chinese | `zh_TW` |
+| Back to English | `en` |
+
+Use **underscores, not hyphens** (`zh_CN`, not `zh-CN`), and be specific:
+`zh_CN` and `zh_TW` are treated as different languages.
+
+## 4. Restart R, then read
+
+```{r}
+# Session -> Restart R
+library(rhelpi18n)
+library(gsocproposal)
+?greet
+```
+
+The help pane now shows the translated page, with any version/date-specific bits
+filled in with the real, current value. Sections a translator hasn't done yet
+stay in English — you always get correct information, never stale.
+
+## Seeing the original English again
+
+There is no per-page switch; just resolve the language to something with no
+translation installed (the default is `"en"`):
+
+```{r}
+Sys.setenv(LANGUAGE = "en"); ?greet
+```
+
+## Switching languages
+
+```{r}
+Sys.setenv(LANGUAGE = "fr"); ?greet   # French
+```
+
+No reinstall needed to switch — just change the variable (restart R if a page
+seems stuck).
+
+## Troubleshooting
+
+- **Still English?** Did you *restart R* after installing? Check
+  `Sys.getenv("LANGUAGE")` and that `library(rhelpi18n)` is loaded.
+- **Some sections translated, some not?** That translation is incomplete, or the
+  package was updated since it was written.
+- **List what translations you have:**
+
+```{r}
+ip <- installed.packages(fields = c("Translates", "Language"))
+ip[!is.na(ip[, "Translates"]), c("Package", "Translates", "Language")]
+```
+
+## How it works (short version)
+
+When you open a help page, rhelpi18n notices the package and your `LANGUAGE`,
+finds an installed translation module declaring that package + language, and
+swaps the translated text in — re-inserting live values (dates, versions,
+generated tables) from your actual installation. That last point is why a
+translation stays correct after you reinstall or update the package.

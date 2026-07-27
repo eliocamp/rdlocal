@@ -18,5 +18,8 @@ Imports:
     yaml,
     whisker
 Suggests:
-    testit
+    testit,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
 URL: https://eliocamp.github.io/rhelpi18n/
