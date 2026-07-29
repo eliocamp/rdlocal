@@ -1,0 +1,104 @@
+# Internationalisation of R help pages
+
+This repository documents a proposal to support internationalisation of
+R help pages.
+
+This project started at the 2023 R Project Sprint. More [in this
+issue](https://github.com/r-devel/r-project-sprint-2023/issues/35).
+
+## For users
+
+Install this package:
+
+``` r
+
+pak::pak("eliocamp/rhelpi18n")
+```
+
+Next install a translation module. The
+[base.es](https://github.com/eliocamp/base.es) package hosts
+translations for [`base::mean()`](https://rdrr.io/r/base/mean.html) as
+an example, install it with
+
+``` r
+
+pak::pak("eliocamp/base.es")
+```
+
+Setting the LANGAUGE environmental variable to “es” will change your R
+language.
+
+``` r
+
+library(rhelpi18n)
+Sys.setenv(LANGUAGE = "es")
+```
+
+Now [`base::mean()`](https://rdrr.io/r/base/mean.html)’s help page will
+be displayed in Spanish.
+
+This will work with the HTML documentation displayed by R GUIs like
+RStudio, as well as with text documentation displayed by R in the
+console.
+
+## For package developers
+
+First get a copy of the package you want to translate.
+
+Choose your translation **language** by its [ISO 2-letter
+code](https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes)
+eventually with a regional option using underscore:
+
+or example Spanish would be `language = "es"`, and Argentine Spanish
+would be `language = "es_AR"`.
+
+Then use
+[`rhelpi18n::i18n_module_create()`](https://eliocamp.github.io/rhelpi18n/reference/i18n_module_create.md)
+to create a **lang** translation **module** for that **package**
+
+``` r
+
+rhelpi18n::i18n_module_create(module_name = "package.lang", 
+                              language = "lang", 
+                              module_path = "path/to/module", 
+                              package_path = "path/to/package")
+```
+
+The translation string are saved into yaml files, one per Rd file of the
+original package.
+
+You can find them in “path/to/module/translations” with this format:
+
+``` yaml
+title:
+  original: Title in the original language
+  translation: ~
+```
+
+You can distribute them to your package translators.
+
+After translation, replace the completed yaml files in the same folder.
+
+Build the package and test.
+
+That’s it.
+
+## For package translators
+
+In the received yaml files, replace the `~` in each `translation` field
+by the translation of the `original` field, like in the exemple:
+
+``` yaml
+title:
+  original: Title in the original language
+  translation: Título en la lengua original
+```
+
+**Problems**
+
+1.  It’s not clear that the page is a translation and not the “official”
+    one.
+2.  It’s not possible to access the original documentation without
+    changing the LANGUAGE environmental variable and opening the help
+    page again.
+3.  There are some formatting issues, such as the `...` argument name.
