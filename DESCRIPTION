@@ -20,3 +20,8 @@ Imports:
 Suggests:
     testit
 URL: https://eliocamp.github.io/rhelpi18n/
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
+Config/build/clean-inst-doc: FALSE

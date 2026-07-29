@@ -1,0 +1,120 @@
+---
+title: "Anatomy of a DESCRIPTION"
+format: html
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Anatomy of a DESCRIPTION}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(rhelpi18n)
+```
+
+When you create a new translation module using the function `i18n_module_create()`, it initializes a minimal DESCRIPTION file for your module. This is where the magic happens, and we'd like to share some best practices to make sure you fill in all the right values.
+
+Let's illustrate how this works by using the fake example of translating ggplot2 into French (`language = "fr"`).
+
+```{{r}}
+#| eval:false
+i18n_module_create(module_name = "ggplot2.fr",
+                   language = "fr",
+                   package_path = "~/R/ggplot2")
+```
+
+As you set up your own translation module, keep these tips in mind:
+
+## Package, Translates and Version
+
+- `Package` is set-up by the `i18n_module_create()` to be the translation
+module name.
+- `Translates` gets the package name and version :
+
+We recommend translation module **`Version`** to match the **package version**.
+
+
+::::: columns
+::: {.column width="50%"}
+ggplot2 content
+
+``` {.yaml filename="ggplot2/DESCRIPTION"}
+Package: ggplot2
+Version: 3.5.1
+```
+:::
+
+:::{.column width="50%"}
+becomes
+
+``` {.yaml filename="ggplot2.fr/DESCRIPTION"}
+Package: ggplot2.fr
+Version: 3.5.1
+Type: Translation-module
+Translates: ggplot2 (== 3.5.1)
+```
+:::
+:::::
+
+## Title and Description
+
+Both shall be the exact translation of the original Title and Description.
+
+ggplot2 content
+
+```{.yaml filename="ggplot2/DESCRIPTION"}
+Title: Create Elegant Data Visualisations Using the Grammar of Graphics
+Description: A system for 'declaratively' creating graphics,
+    based on "The Grammar of Graphics". You provide the data, tell 'ggplot2'
+    how to map variables to aesthetics, what graphical primitives to use,
+    and it takes care of the details.
+```
+
+is turned into module as
+
+``` {.yaml filename="ggplot2.fr/DESCRIPTION"}
+Title: Crée des Visualisations de Données Élégantes Basées sur la Grammaire des Graphiques
+Description: Un système pour créer des graphiques de manière 'déclarative', basé sur
+    "The Grammar of Graphics". Vous fournissez les données, vous indiquez à 'ggplot2'
+    la correspondance des variables avec les paramêtres esthétiques, la primitive graphique
+    à utiliser, et 'ggplot2' s'occupe de tous les détails.
+```
+
+## Type, Language and Encoding
+
+ Type and Language are set by the `i18n_module_create()` function to be `Translation-module` and
+ the configured "language" value.
+ Encoding must be `UTF-8`
+
+```  {.yaml filename="ggplot2.fr/DESCRIPTION"}
+Type: Translation-module
+Encoding: UTF-8
+Language: fr
+```
+
+## imports and Remotes
+
+For the time being, {rhelpi18n} is only available in github and is a prerequisite for your
+translation module to work. We can use DESCRIPTION to manage both :
+
+```  {.yaml filename="ggplot2.fr/DESCRIPTION"}
+imports:
+    rhelpi18n
+Remotes:
+    eliocamp/rhelpi18n
+```
+
+## Authors, Licence, BugReports
+
+All shall be filled as usual with the module author and module URL.
+
+
+
+
