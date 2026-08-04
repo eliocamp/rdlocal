@@ -2,30 +2,40 @@
 % Please edit documentation in R/module-create.R
 \name{i18n_module_create}
 \alias{i18n_module_create}
-\title{Creates a translation module}
+\title{Creates a translation module (deprecated)}
 \usage{
 i18n_module_create(
   module_name = NULL,
   language,
-  module_path = file.path(".", module_name),
+  module_path,
   package_path,
   rstudio_project = TRUE
 )
 }
 \arguments{
-\item{module_name}{Name of the translation module. It needs to be a valid
-package name. If missing, it will be created as the name of the package.language.}
+\item{module_name}{Module package name. Defaults to \verb{<package>.<language>},
+with non-alphanumerics in \code{language} collapsed to \code{"."} (so \code{"en-GB"} gives
+\code{pkg.en.GB}); the real tag is kept in the module's \verb{Language:} field.}
 
-\item{language}{Language of the translation module}
+\item{language}{Language code, e.g. \code{"es"}.}
 
-\item{module_path}{Path where the module will be created.}
+\item{module_path}{Directory to create the module in.}
 
-\item{package_path}{Path to the package that will be translated.}
+\item{package_path}{Path to the local source package to translate.}
 
-\item{rstudio_project}{Logical indicating whether to create an .Rproj file.}
+\item{rstudio_project}{Whether to create an \code{.Rproj} file.}
+}
+\value{
+(invisibly) the module path.
 }
 \description{
-Creates a translation module skeleton form a source package with the
-translation templates with the original strings and the proper
-functions to load translations.
+\code{i18n_module_create()} is deprecated: use \code{\link[=i18n_module_skeleton]{i18n_module_skeleton()}}, which
+defaults to scaffolded templates (dynamic \verb{\\Sexpr} / \verb{#ifdef} spans replaced by
+\code{{ISEXPR_i}} placeholders). This function is now a thin wrapper that calls
+\code{i18n_module_skeleton(scaffold = FALSE)}, reproducing the old behaviour: flat
+templates of the exact source strings, with no placeholders and no temporary
+install.
+}
+\seealso{
+\code{\link[=i18n_module_skeleton]{i18n_module_skeleton()}}
 }

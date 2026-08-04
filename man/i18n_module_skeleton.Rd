@@ -9,6 +9,7 @@ i18n_module_skeleton(
   language,
   module_name = NULL,
   module_path = file.path(".", module_name),
+  scaffold = TRUE,
   rstudio_project = TRUE
 )
 }
@@ -22,6 +23,11 @@ with non-alphanumerics in \code{language} collapsed to \code{"."} (so \code{"en-
 \code{pkg.en.GB}); the real tag is kept in the module's \verb{Language:} field.}
 
 \item{module_path}{Directory to create the module in.}
+
+\item{scaffold}{If \code{TRUE} (default), dynamic spans become \code{{ISEXPR_i}}
+placeholders via a source<->installed diff (which briefly installs the
+package into a temporary library). If \code{FALSE}, emit legacy flat templates
+(exact source strings, no placeholders, no temporary install).}
 
 \item{rstudio_project}{Whether to create an \code{.Rproj} file.}
 }
@@ -44,7 +50,13 @@ Locating the spans needs both the \emph{source} Rd (dynamic nodes still live) an
 the \emph{baked} Rd (values resolved). The source is taken from \code{package_path}; the
 baked tree is obtained by installing that source into a temporary library and
 reading its \code{Rd_db}, then removing the temporary library.
+
+With \code{scaffold = FALSE} the \code{original} strings are instead the flattened
+\emph{source} Rd verbatim (no placeholders, and no temporary install) -- the legacy
+behaviour of the now-deprecated \code{\link[=i18n_module_create]{i18n_module_create()}}. Such a template only
+matches fully-static help pages at runtime, because an unresolved dynamic
+\verb{\\Sexpr} in the stored string can never equal the installed (baked) help.
 }
 \seealso{
-\code{\link[=i18n_module_create]{i18n_module_create()}}
+\code{\link[=i18n_module_create]{i18n_module_create()}}, the deprecated \code{scaffold = FALSE} alias.
 }

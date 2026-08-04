@@ -1,55 +1,28 @@
-#' Creates a translation module
+#' Creates a translation module (deprecated)
 #'
-#' Creates a translation module skeleton form a source package with the
-#' translation templates with the original strings and the proper
-#' functions to load translations.
+#' `i18n_module_create()` is deprecated: use [i18n_module_skeleton()], which
+#' defaults to scaffolded templates (dynamic `\Sexpr` / `#ifdef` spans replaced by
+#' `{ISEXPR_i}` placeholders). This function is now a thin wrapper that calls
+#' `i18n_module_skeleton(scaffold = FALSE)`, reproducing the old behaviour: flat
+#' templates of the exact source strings, with no placeholders and no temporary
+#' install.
 #'
-#' @param module_name Name of the translation module. It needs to be a valid
-#' package name. If missing, it will be created as the name of the package.language.
-#' @param package_path Path to the package that will be translated.
-#' @param language Language of the translation module
-#' @param module_path Path where the module will be created.
-#' @param rstudio_project Logical indicating whether to create an .Rproj file.
+#' @inheritParams i18n_module_skeleton
 #'
+#' @return (invisibly) the module path.
+#' @seealso [i18n_module_skeleton()]
 #' @export
 i18n_module_create <- function(module_name = NULL,
                                language,
-                               module_path = file.path(".", module_name),
+                               module_path,
                                package_path,
                                rstudio_project = TRUE) {
-  package <- get_package_name(package_path)
-  version <- get_package_version(package_path)
-
-  if (is.null(module_name)) {
-    module_name <- paste(package, language, sep = ".")
-  }
-
-  if (!valid_package_name(module_name)) {
-    stop(module_name, " is not a valid package name")
-  }
-
-  if (rstudio_project) {
-    rstudio_project <- module_name
-  } else {
-    rstudio_project <- NULL
-  }
-
-  copy_pkg_template(module_path, rstudio_project = rstudio_project)
-
-  modify_description(module_path, module_name = module_name, package = package,
-                     version = version, language = language)
-
-  rd_files <- list.files(file.path(package_path, "man"), pattern = "*.Rd", full.names = TRUE)
-
-  macros <- tools::loadPkgRdMacros(package_path)
-
-  i18n_translation_templates(rd_files, file.path(module_path, "translations"),
-                             macros = macros)
-
-  for (file in rd_files) {
-    file.copy(file, file.path(module_path, "man_original", basename(file)))
-  }
-
+  .Deprecated("i18n_module_skeleton")
+  args <- list(package_path = package_path, language = language,
+               module_name = module_name, scaffold = FALSE,
+               rstudio_project = rstudio_project)
+  if (!missing(module_path)) args$module_path <- module_path
+  do.call(i18n_module_skeleton, args)
 }
 
 get_package_name <- function(package_path) {

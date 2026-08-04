@@ -15,19 +15,30 @@
 #' baked tree is obtained by installing that source into a temporary library and
 #' reading its `Rd_db`, then removing the temporary library.
 #'
+#' With `scaffold = FALSE` the `original` strings are instead the flattened
+#' *source* Rd verbatim (no placeholders, and no temporary install) -- the legacy
+#' behaviour of the now-deprecated [i18n_module_create()]. Such a template only
+#' matches fully-static help pages at runtime, because an unresolved dynamic
+#' `\Sexpr` in the stored string can never equal the installed (baked) help.
+#'
 #' @param package_path Path to the local source package to translate.
 #' @param language Language code, e.g. `"es"`.
 #' @param module_name Module package name. Defaults to `<package>.<language>`,
 #'   with non-alphanumerics in `language` collapsed to `"."` (so `"en-GB"` gives
 #'   `pkg.en.GB`); the real tag is kept in the module's `Language:` field.
 #' @param module_path Directory to create the module in.
+#' @param scaffold If `TRUE` (default), dynamic spans become `{ISEXPR_i}`
+#'   placeholders via a source<->installed diff (which briefly installs the
+#'   package into a temporary library). If `FALSE`, emit legacy flat templates
+#'   (exact source strings, no placeholders, no temporary install).
 #' @param rstudio_project Whether to create an `.Rproj` file.
 #'
 #' @return (invisibly) the module path.
-#' @seealso [i18n_module_create()]
+#' @seealso [i18n_module_create()], the deprecated `scaffold = FALSE` alias.
 #' @export
 i18n_module_skeleton <- function(package_path, language, module_name = NULL,
                                  module_path = file.path(".", module_name),
+                                 scaffold = TRUE,
                                  rstudio_project = TRUE) {
   package <- get_package_name(package_path)
   version <- get_package_version(package_path)
@@ -38,11 +49,6 @@ i18n_module_skeleton <- function(package_path, language, module_name = NULL,
   if (!valid_package_name(module_name)) {
     stop(module_name, " is not a valid package name")
   }
-
-  # Baked Rd tree: install the local source into a throwaway library so its
-  # build/install-stage \Sexpr are resolved, read Rd_db, then remove the library.
-  baked <- baked_rd_db(package_path, package)
-  on.exit(unlink(attr(baked, "lib"), recursive = TRUE), add = TRUE)
 
   # Module shell: reuse the existing template + DESCRIPTION machinery.
   copy_pkg_template(module_path,
@@ -56,6 +62,21 @@ i18n_module_skeleton <- function(package_path, language, module_name = NULL,
   mdir     <- file.path(module_path, "man_original")
   dir.create(tdir, showWarnings = FALSE, recursive = TRUE)
   dir.create(mdir, showWarnings = FALSE, recursive = TRUE)
+
+  if (!isTRUE(scaffold)) {
+    # Legacy path: flatten the source Rd to exact strings, no source<->baked diff
+    # and no temporary install. Emits one plain template per page + originals.
+    i18n_translation_templates(rd_files, tdir, macros = macros)
+    for (rd_file in rd_files) {
+      file.copy(rd_file, file.path(mdir, basename(rd_file)), overwrite = TRUE)
+    }
+    return(invisible(module_path))
+  }
+
+  # Baked Rd tree: install the local source into a throwaway library so its
+  # build/install-stage \Sexpr are resolved, read Rd_db, then remove the library.
+  baked <- baked_rd_db(package_path, package)
+  on.exit(unlink(attr(baked, "lib"), recursive = TRUE), add = TRUE)
 
   for (rd_file in rd_files) {
     topic <- basename(rd_file)
