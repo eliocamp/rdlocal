@@ -1,14 +1,15 @@
-#' Create a scaffolded translation-module skeleton from a local source package
+#' Create a translation module from a local source package
 #'
-#' Like [i18n_module_create()], but the `original` strings are *scaffolds*:
-#' dynamic install/build `\Sexpr` (and `#ifdef`/`#ifndef`) spans are replaced by
+#' Creates a translation module from a source package. By default
+#' (`scaffold = TRUE`) the `original` strings are *scaffolds*: dynamic
+#' install/build `\Sexpr` (and `#ifdef`/`#ifndef`) spans are replaced by
 #' `{ISEXPR_i}` placeholders, so a human's translation keeps matching the
 #' installed help across reinstalls (an install-stage `\Sexpr` bakes a different
-#' value each install, which the plain [i18n_module_create()] template can never
-#' match). The translator fills in the `translation:` fields and leaves the
-#' `{ISEXPR_i}` tokens in place. Each section also carries a `spans:` map showing
-#' an example of what each token held at generation time (the real value differs
-#' per install), so the translator knows what a `{ISEXPR_i}` stands for.
+#' value each install, which a plain exact-string template can never match). The
+#' translator fills in the `translation:` fields and leaves the `{ISEXPR_i}`
+#' tokens in place. Each section also carries a `spans:` map showing an example of
+#' what each token held at generation time (the real value differs per install),
+#' so the translator knows what a `{ISEXPR_i}` stands for.
 #'
 #' Locating the spans needs both the *source* Rd (dynamic nodes still live) and
 #' the *baked* Rd (values resolved). The source is taken from `package_path`; the
@@ -17,9 +18,9 @@
 #'
 #' With `scaffold = FALSE` the `original` strings are instead the flattened
 #' *source* Rd verbatim (no placeholders, and no temporary install) -- the legacy
-#' behaviour of the now-deprecated [i18n_module_create()]. Such a template only
-#' matches fully-static help pages at runtime, because an unresolved dynamic
-#' `\Sexpr` in the stored string can never equal the installed (baked) help.
+#' exact-string behaviour. Such a template only matches fully-static help pages at
+#' runtime, because an unresolved dynamic `\Sexpr` in the stored string can never
+#' equal the installed (baked) help.
 #'
 #' @param package_path Path to the local source package to translate.
 #' @param language Language code, e.g. `"es"`.
@@ -34,9 +35,8 @@
 #' @param rstudio_project Whether to create an `.Rproj` file.
 #'
 #' @return (invisibly) the module path.
-#' @seealso [i18n_module_create()], the deprecated `scaffold = FALSE` alias.
 #' @export
-i18n_module_skeleton <- function(package_path, language, module_name = NULL,
+i18n_module_create <- function(package_path, language, module_name = NULL,
                                  module_path = file.path(".", module_name),
                                  scaffold = TRUE,
                                  rstudio_project = TRUE) {

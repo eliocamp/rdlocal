@@ -45,7 +45,7 @@ Pick a language code (`es`, `fr`, `zh_CN`, `pt_BR`, …) and run:
 ```{r}
 library(rhelpi18n)
 
-i18n_module_skeleton(
+i18n_module_create(
   package_path = "~/translate/gsocproposal",   # the SOURCE folder
   language     = "es",                          # your language code
   module_path  = "~/translate/gsocproposal.es"  # where to create the translation
@@ -157,7 +157,7 @@ Tell users to install it and set `LANGUAGE=es` — see the companion vignette,
 ## Keeping a translation current
 
 When the package releases a new version its help may change. Re-run
-`i18n_module_skeleton()` into a new folder and compare: sections whose
+`i18n_module_create()` into a new folder and compare: sections whose
 `original` changed need re-translating; copy the rest across. `man_original/`
 stores the exact `.Rd` your translation was made from, so the change is easy to
 diff.

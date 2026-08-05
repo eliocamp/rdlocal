@@ -1,30 +1,3 @@
-#' Creates a translation module (deprecated)
-#'
-#' `i18n_module_create()` is deprecated: use [i18n_module_skeleton()], which
-#' defaults to scaffolded templates (dynamic `\Sexpr` / `#ifdef` spans replaced by
-#' `{ISEXPR_i}` placeholders). This function is now a thin wrapper that calls
-#' `i18n_module_skeleton(scaffold = FALSE)`, reproducing the old behaviour: flat
-#' templates of the exact source strings, with no placeholders and no temporary
-#' install.
-#'
-#' @inheritParams i18n_module_skeleton
-#'
-#' @return (invisibly) the module path.
-#' @seealso [i18n_module_skeleton()]
-#' @export
-i18n_module_create <- function(module_name = NULL,
-                               language,
-                               module_path,
-                               package_path,
-                               rstudio_project = TRUE) {
-  .Deprecated("i18n_module_skeleton")
-  args <- list(package_path = package_path, language = language,
-               module_name = module_name, scaffold = FALSE,
-               rstudio_project = rstudio_project)
-  if (!missing(module_path)) args$module_path <- module_path
-  do.call(i18n_module_skeleton, args)
-}
-
 get_package_name <- function(package_path) {
   description_file <- file.path(package_path, "DESCRIPTION")
   read.dcf(description_file, fields = "Package")[[1]]
