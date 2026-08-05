@@ -134,7 +134,7 @@ install.packages("~/translate/gsocproposal.es", repos = NULL, type = "source")
 # RESTART R (Session -> Restart R), then:
 library(rhelpi18n)
 library(gsocproposal)
-Sys.setenv(LANGUAGE = "es")
+Sys.setLanguage("es")
 ?sexpr_install
 ```
 

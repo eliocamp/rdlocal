@@ -20,7 +20,7 @@ language. Nothing here changes how your code runs — only what `?function` show
 remotes::install_github("adit-0132/rhelpi18n@dynamic-sexpr")  # 1. the engine
 remotes::install_github("SOMEONE/gsocproposal.es")            # 2. a translation
 # 3. RESTART R
-Sys.setenv(LANGUAGE = "es"); library(rhelpi18n); ?greet       # 4. read it
+Sys.setLanguage("es"); library(rhelpi18n); ?greet            # 4. read it
 ```
 
 The rest explains each step.
@@ -52,16 +52,21 @@ language, you simply keep seeing English — nothing breaks.
 
 ## 3. Choose your language
 
-R uses the `LANGUAGE` environment variable. There is no `Sys.setlanguage()` in
-base R — you set the variable directly.
+Help language is controlled by the `LANGUAGE` environment variable. Base R's
+`Sys.setLanguage()` is the convenient setter — it wraps `Sys.setenv(LANGUAGE =
+...)` and returns the previous value:
 
 ```{r}
 # this session only:
-Sys.setenv(LANGUAGE = "es")
+Sys.setLanguage("es")
 
 # permanently: add a line to ~/.Renviron, then restart R
 usethis::edit_r_environ()   # add:  LANGUAGE=es
 ```
+
+On an R build without NLS support, or in a `C`/`POSIX` locale, `Sys.setLanguage()`
+declines to set the variable — translated help still works there, so fall back to
+`Sys.setenv(LANGUAGE = "es")`.
 
 | Language | `LANGUAGE` |
 |---|---|
@@ -94,13 +99,13 @@ There is no per-page switch; just resolve the language to something with no
 translation installed (the default is `"en"`):
 
 ```{r}
-Sys.setenv(LANGUAGE = "en"); ?greet
+Sys.setLanguage("en"); ?greet
 ```
 
 ## Switching languages
 
 ```{r}
-Sys.setenv(LANGUAGE = "fr"); ?greet   # French
+Sys.setLanguage("fr"); ?greet   # French
 ```
 
 No reinstall needed to switch — just change the variable (restart R if a page
