@@ -95,7 +95,7 @@ stay in English — you always get correct information, never stale.
 
 ## Seeing the original English again
 
-There is no per-page switch; just resolve the language to something with no
+To see the help page in the original language, change your language to a language with no
 translation installed (the default is `"en"`):
 
 ```{r}
