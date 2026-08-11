@@ -50,7 +50,6 @@ i18n_module_create <- function(package_path, language, module_name = NULL,
     stop(module_name, " is not a valid package name")
   }
 
-  # Module shell: reuse the existing template + DESCRIPTION machinery.
   copy_pkg_template(module_path,
                     rstudio_project = if (isTRUE(rstudio_project)) module_name else NULL)
   modify_description(module_path, module_name = module_name, package = package,
