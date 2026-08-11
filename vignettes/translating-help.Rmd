@@ -42,9 +42,7 @@ i18n_module_create(
 )
 ```
 
-It briefly installs the package into a temporary library so it can see exactly
-how the help looks after installation (then removes it). You get a small module
-package:
+You get a small module package:
 
 ```
 gsocproposal.es/
