@@ -75,7 +75,7 @@ declines to set the variable — translated help still works there, so fall back
 | Brazilian Portuguese | `pt_BR` |
 | Simplified Chinese | `zh_CN` |
 | Traditional Chinese | `zh_TW` |
-| Back to English | `en` |
+| English | `en` |
 
 Use **underscores, not hyphens** (`zh_CN`, not `zh-CN`), and be specific:
 `zh_CN` and `zh_TW` are treated as different languages.
