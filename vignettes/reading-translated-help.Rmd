@@ -90,8 +90,8 @@ library(gsocproposal)
 ```
 
 The help pane now shows the translated page, with any version/date-specific bits
-filled in with the real, current value. Sections a translator hasn't done yet
-stay in English — you always get correct information, never stale.
+filled in with the real, current value. 
+Untranslated sections are shown in the original language.
 
 ## Seeing the original English again
 
