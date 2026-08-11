@@ -73,9 +73,8 @@ i18n_module_create <- function(package_path, language, module_name = NULL,
   }
 
   # Baked Rd tree: install the local source into a throwaway library so its
-  # build/install-stage \Sexpr are resolved, read Rd_db, then remove the library.
+  # build/install-stage \Sexpr are resolved, then read its Rd_db.
   baked <- baked_rd_db(package_path, package)
-  on.exit(unlink(attr(baked, "lib"), recursive = TRUE), add = TRUE)
 
   for (rd_file in rd_files) {
     topic <- basename(rd_file)
@@ -92,17 +91,14 @@ i18n_module_create <- function(package_path, language, module_name = NULL,
   invisible(module_path)
 }
 
-# Install a local source package into a throwaway library and return its Rd_db
-# (build/install \Sexpr resolved). The library path is stashed on attr "lib" for
-# the caller to unlink.
+# Install a local source package into a throwaway library (under tempdir(), which
+# the session cleans up) and return its Rd_db (build/install \Sexpr resolved).
 baked_rd_db <- function(package_path, package) {
   lib <- tempfile("i18nlib")
   dir.create(lib)
   utils::install.packages(package_path, repos = NULL, type = "source",
                           lib = lib, quiet = TRUE)
-  db <- tools::Rd_db(package, lib.loc = lib)
-  attr(db, "lib") <- lib
-  db
+  tools::Rd_db(package, lib.loc = lib)
 }
 
 # detect_scaffolds() output -> the per-topic template structure:
@@ -188,7 +184,6 @@ modify_description <- function(path, module_name, package, version, language) {
   writeLines(description_text, description_file)
 }
 
-# from usethis:::valid_package_name
-valid_package_name <- function (x) {
-  grepl("^[a-zA-Z][a-zA-Z0-9.]+$", x) && !grepl("\\.$", x)
+valid_package_name <- function(x) {
+  grepl(paste0("^(", .standard_regexps()$valid_package_name, ")$"), x)
 }
