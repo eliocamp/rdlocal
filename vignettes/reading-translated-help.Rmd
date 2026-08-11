@@ -48,7 +48,7 @@ remotes::install_github("SOMEONE/gsocproposal.es")  # a Spanish translation modu
 Translations ship as their own small packages, usually named
 `<package>.<language>`. Install as many as you like — one per language, or for
 different packages; they don't conflict. If none exists for your package and
-language, you simply keep seeing English — nothing breaks.
+language, the original package help will be shown as normal.
 
 ## 3. Choose your language
 
