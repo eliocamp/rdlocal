@@ -14,31 +14,17 @@ knitr::opts_chunk$set(eval = FALSE, comment = "#>")
 This guide is for **R users** who would rather read documentation in their own
 language. Nothing here changes how your code runs — only what `?function` shows.
 
-## The whole thing in four lines
+## The whole thing in three lines
 
 ```{r}
-remotes::install_github("adit-0132/rhelpi18n@dynamic-sexpr")  # 1. the engine
-remotes::install_github("SOMEONE/gsocproposal.es")            # 2. a translation
-# 3. RESTART R
-Sys.setLanguage("es"); library(rhelpi18n); ?greet            # 4. read it
+remotes::install_github("SOMEONE/gsocproposal.es")   # 1. a translation
+# 2. RESTART R
+Sys.setLanguage("es"); library(rhelpi18n); ?greet    # 3. read it
 ```
 
 The rest explains each step.
 
-## 1. Install the engine
-
-**rhelpi18n** makes R look for a translation whenever you open a help page.
-Install it once.
-
-```{r}
-install.packages("remotes")
-remotes::install_github("adit-0132/rhelpi18n@dynamic-sexpr")
-```
-
-(Until merged upstream, use the `@dynamic-sexpr` branch; afterwards just
-`remotes::install_github("eliocamp/rhelpi18n")`.)
-
-## 2. Install the package and a translation
+## 1. Install the package and a translation
 
 ```{r}
 install.packages("gsocproposal")                    # the package (however you normally would)
@@ -50,11 +36,9 @@ Translations ship as their own small packages, usually named
 different packages; they don't conflict. If none exists for your package and
 language, the original package help will be shown as normal.
 
-## 3. Choose your language
+## 2. Choose your language
 
-Help language is controlled by the `LANGUAGE` environment variable. Base R's
-`Sys.setLanguage()` is the convenient setter — it wraps `Sys.setenv(LANGUAGE =
-...)` and returns the previous value:
+Set the help language with base R's `Sys.setLanguage()`:
 
 ```{r}
 # this session only:
@@ -80,7 +64,7 @@ declines to set the variable — translated help still works there, so fall back
 Use **underscores, not hyphens** (`zh_CN`, not `zh-CN`), and be specific:
 `zh_CN` and `zh_TW` are treated as different languages.
 
-## 4. Restart R, then read
+## 3. Restart R, then read
 
 ```{r}
 # Session -> Restart R
@@ -113,8 +97,8 @@ seems stuck).
 
 ## Troubleshooting
 
-- **Still English?** Did you *restart R* after installing? Check
-  `Sys.getenv("LANGUAGE")` and that `library(rhelpi18n)` is loaded.
+- **Still English?** Check that `Sys.getenv("LANGUAGE")` is set and that
+  `library(rhelpi18n)` is loaded.
 - **Some sections translated, some not?** That translation is incomplete, or the
   package was updated since it was written.
 - **List what translations you have:**

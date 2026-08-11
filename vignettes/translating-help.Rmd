@@ -18,17 +18,7 @@ package's code — you only edit text files.
 The example package throughout is `gsocproposal`, a small demo that exercises
 every rhelpi18n feature.
 
-## 1. Install rhelpi18n
-
-```{r}
-install.packages("remotes")
-remotes::install_github("adit-0132/rhelpi18n@module-skeleton")
-```
-
-(Until this is merged upstream, use the `@module-skeleton` branch; afterwards it
-will simply be `remotes::install_github("eliocamp/rhelpi18n")`.)
-
-## 2. Get the package *source*
+## 1. Get the package *source*
 
 You need the package's **source** — a folder with a `DESCRIPTION` file and a
 `man/` folder of `.Rd` help files — not the installed version.
@@ -38,7 +28,7 @@ You need the package's **source** — a folder with a `DESCRIPTION` file and a
 system("git clone https://github.com/someone/gsocproposal.git ~/translate/gsocproposal")
 ```
 
-## 3. Generate the translation skeleton
+## 2. Generate the translation skeleton
 
 Pick a language code (`es`, `fr`, `zh_CN`, `pt_BR`, …) and run:
 
@@ -64,7 +54,7 @@ gsocproposal.es/
   man_original/          # copies of the original .Rd, for reference
 ```
 
-## 4. Anatomy of a translation file
+## 3. Anatomy of a translation file
 
 Open `translations/sexpr_install.yaml`:
 
@@ -85,7 +75,7 @@ description:
 | `spans` | example of what each `{ISEXPR_i}` held at generation time | **no** (a hint) |
 | `ifdef` | on some pages; one entry per platform-specific branch | **yes** |
 
-## 5. The one rule: keep the `{ISEXPR_…}` placeholders
+## 4. The one rule: keep the `{ISEXPR_…}` placeholders
 
 Text that changes every install (a version, a date, a generated list) is
 replaced by a placeholder like `{ISEXPR_0}`. **Copy each placeholder into your
@@ -127,7 +117,7 @@ description:
 If the original shows `{{ISEXPR_0}}` with **double** braces, that's real text
 the author wrote — keep the double braces as-is.
 
-## 6. Test locally
+## 5. Test locally
 
 ```{r}
 install.packages("~/translate/gsocproposal.es", repos = NULL, type = "source")
@@ -140,7 +130,7 @@ Sys.setLanguage("es")
 
 Always **restart R after installing** — otherwise R may show a stale version.
 
-## 7. Publish on GitHub
+## 6. Publish on GitHub
 
 Your translation module is a small R package; put it on GitHub so others can
 install it.
