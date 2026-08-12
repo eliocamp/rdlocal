@@ -61,7 +61,12 @@ wherever a localisation for them exists.
 | Traditional Chinese | `zh_TW` |
 | English | `en` |
 
-Use **underscores, not hyphens** (`zh_CN`, not `zh-CN`), and be specific:
+Codes follow gettext's `ll_CC` form — a lowercase
+[ISO 639 language code](https://www.gnu.org/software/gettext/manual/html_node/Usual-Language-Codes.html)
+(or a [three-letter code](https://www.gnu.org/software/gettext/manual/html_node/Rare-Language-Codes.html)
+for rarer languages), optionally plus an uppercase
+[ISO 3166 territory code](https://www.gnu.org/software/gettext/manual/html_node/Country-Codes.html).
+So use an **underscore, not a hyphen** (`zh_CN`, not `zh-CN`), and note that
 `zh_CN` and `zh_TW` are treated as different languages.
 
 ## 3. Load the engine and read

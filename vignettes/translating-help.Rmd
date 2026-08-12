@@ -152,7 +152,12 @@ diff.
 
 ## Language codes
 
-Use an **underscore**, not a hyphen: `zh_CN`, not `zh-CN` (R's language setting
-uses underscores). `zh_CN` (Simplified) and `zh_TW` (Traditional) are distinct.
-The module *name* gets dots automatically (`gsocproposal.zh.CN`) — that's fine;
-the real tag lives in the module's `Language:` field.
+Codes follow gettext's `ll_CC` form — a lowercase
+[ISO 639 language code](https://www.gnu.org/software/gettext/manual/html_node/Usual-Language-Codes.html)
+(or a [three-letter code](https://www.gnu.org/software/gettext/manual/html_node/Rare-Language-Codes.html)
+for rarer languages), optionally plus an uppercase
+[ISO 3166 territory code](https://www.gnu.org/software/gettext/manual/html_node/Country-Codes.html).
+Use an **underscore**, not a hyphen (`zh_CN`, not `zh-CN`); `zh_CN` (Simplified)
+and `zh_TW` (Traditional) are distinct. The module *name* gets dots automatically
+(`gsocproposal.zh.CN`) — that's fine; the real tag lives in the module's
+`Language:` field.
