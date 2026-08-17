@@ -9,7 +9,6 @@ i18n_module_create(
   language,
   module_name = NULL,
   module_path = file.path(".", module_name),
-  scaffold = TRUE,
   rstudio_project = TRUE
 )
 }
@@ -24,37 +23,32 @@ with non-alphanumerics in \code{language} collapsed to \code{"."} (so \code{"en-
 
 \item{module_path}{Directory to create the module in.}
 
-\item{scaffold}{If \code{TRUE} (default), dynamic spans become \code{{ISEXPR_i}}
-placeholders via a source<->installed diff (which briefly installs the
-package into a temporary library). If \code{FALSE}, emit legacy flat templates
-(exact source strings, no placeholders, no temporary install).}
-
 \item{rstudio_project}{Whether to create an \code{.Rproj} file.}
 }
 \value{
 (invisibly) the module path.
 }
 \description{
-Creates a translation module from a source package. By default
-(\code{scaffold = TRUE}) the \code{original} strings are \emph{scaffolds}: dynamic
-install/build \verb{\\Sexpr} (and \verb{#ifdef}/\verb{#ifndef}) spans are replaced by
-\code{{ISEXPR_i}} placeholders, so a human's translation keeps matching the
-installed help across reinstalls (an install-stage \verb{\\Sexpr} bakes a different
-value each install, which a plain exact-string template can never match). The
-translator fills in the \verb{translation:} fields and leaves the \code{{ISEXPR_i}}
-tokens in place. Each section also carries a \verb{spans:} map showing an example of
-what each token held at generation time (the real value differs per install),
-so the translator knows what a \code{{ISEXPR_i}} stands for.
+Creates a translation module from a source package. The \code{original} strings are
+\emph{scaffolds}: dynamic install/build \verb{\\Sexpr} (and \verb{#ifdef}/\verb{#ifndef}) spans are
+replaced by \code{{ISEXPR_i}} placeholders, so a human's translation keeps matching
+the installed help across reinstalls (an install-stage \verb{\\Sexpr} bakes a
+different value each install, which a plain exact-string template can never
+match). The translator fills in the \verb{translation:} fields and leaves the
+\code{{ISEXPR_i}} tokens in place. Each section also carries a \verb{spans:} map showing
+an example of what each token held at generation time (the real value differs
+per install), so the translator knows what a \code{{ISEXPR_i}} stands for.
 }
 \details{
-Locating the spans needs both the \emph{source} Rd (dynamic nodes still live) and
-the \emph{baked} Rd (values resolved). The source is taken from \code{package_path}; the
-baked tree is obtained by installing that source into a temporary library and
-reading its \code{Rd_db}, then removing the temporary library.
+Building the scaffolds needs both the \emph{source} Rd (dynamic nodes still live)
+and the \emph{baked} Rd (values resolved). The source is taken from \code{package_path};
+the baked tree is obtained by installing that source into a temporary library
+and reading its \code{Rd_db}.
 
-With \code{scaffold = FALSE} the \code{original} strings are instead the flattened
-\emph{source} Rd verbatim (no placeholders, and no temporary install) -- the legacy
-exact-string behaviour. Such a template only matches fully-static help pages at
-runtime, because an unresolved dynamic \verb{\\Sexpr} in the stored string can never
-equal the installed (baked) help.
+If a topic cannot be scaffolded because its source and installed help do not
+align, it falls back to a plain template (the flattened source, no
+placeholders) marked \code{needs_review: yes}. Topics missing from the installed
+help, or whose source cannot be parsed, are omitted. Either way the affected
+topics are listed in a \code{warning()}, so the skeleton is never silently left
+incomplete.
 }
