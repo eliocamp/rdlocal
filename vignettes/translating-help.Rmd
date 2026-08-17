@@ -48,13 +48,13 @@ You get a small module package:
 gsocproposal.es/
   DESCRIPTION            # which package + language this translates
   R/translation.R        # machinery; don't touch
-  translations/          # ONE .yaml per help page -- your work goes here
+  inst/translations/     # ONE .yaml per help page -- your work goes here
   man_original/          # copies of the original .Rd, for reference
 ```
 
 ## 3. Anatomy of a translation file
 
-Open `translations/sexpr_install.yaml`:
+Open `inst/translations/sexpr_install.yaml`:
 
 ```yaml
 description:
@@ -144,11 +144,32 @@ Tell users to install it and set `LANGUAGE=es` — see the companion vignette,
 
 ## Keeping a translation current
 
-When the package releases a new version its help may change. Re-run
-`i18n_module_create()` into a new folder and compare: sections whose
-`original` changed need re-translating; copy the rest across. `man_original/`
-stores the exact `.Rd` your translation was made from, so the change is easy to
-diff.
+When the package releases a new version, re-sync your module against the new
+source:
+
+```{r}
+i18n_module_update(
+  module_path  = "~/translate/gsocproposal.es",  # your module
+  package_path = "~/translate/gsocproposal"       # the new source
+)
+```
+
+Preview first with `dry_run = TRUE` — it reports what would change without
+touching your files:
+
+```
+5 unchanged  |  2 fuzzy  |  1 new  |  1 dropped
+```
+
+- **unchanged** — kept exactly as you left them.
+- **new** — a section added in the new version, waiting with an empty
+  `translation:`.
+- **dropped** — a section that no longer exists; its translation is removed.
+- **fuzzy** — the original text changed. Your old translation is kept but marked
+  `fuzzy: yes`, with the old text in `previous_original:` so you can see what
+  changed. Update the `translation:`, then **delete the `fuzzy:` and
+  `previous_original:` lines**. Until you do, readers see your translation with a
+  small "may be out of date" note that reveals the current original.
 
 ## Language codes
 

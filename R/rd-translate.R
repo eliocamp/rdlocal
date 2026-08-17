@@ -37,14 +37,25 @@ translate <- function(original, translation) {
       # (missing, or an out-of-date scaffold) it returns `live` unchanged.
       filled <- match_and_fill(live, stored, trans, translation[[section]]$ifdef)$text
 
-      # examples/title that were actually translated show the original collapsed
-      # behind a disclosure; an untranslated section is just `live`.
-      if (!identical(filled, live) && section %in% c("examples", "title")) {
-        filled <- paste0(
-          filled,
-          "\\if{html}{\\out{<details style='display:inline'> <summary>} \U0001f310 \\out{</summary>} ",
-          live,
-          "\\out{</details>}}")
+      # A translated section can carry a collapsible disclosure of the original.
+      # A `fuzzy` section (its original changed since it was translated) shows the
+      # translation plus a "may be out of date" note that reveals the current
+      # original; otherwise examples/title show the original behind a globe. An
+      # untranslated section is just `live`.
+      if (!identical(filled, live)) {
+        if (isTRUE(translation[[section]]$fuzzy)) {
+          filled <- paste0(
+            filled,
+            "\\ifelse{html}{\\out{<details style='display:inline'> <summary>} \u26A0 may be out of date \u2014 show original \\out{</summary>} ",
+            live,
+            "\\out{</details>}}{ (\u26A0 this translation may be out of date)}")
+        } else if (section %in% c("examples", "title")) {
+          filled <- paste0(
+            filled,
+            "\\if{html}{\\out{<details style='display:inline'> <summary>} \U0001f310 \\out{</summary>} ",
+            live,
+            "\\out{</details>}}")
+        }
       }
       original[[section]] <- filled
     }

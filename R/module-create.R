@@ -52,7 +52,7 @@ i18n_module_create <- function(package_path, language, module_name = NULL,
 
   macros   <- tools::loadPkgRdMacros(package_path)
   rd_files <- list.files(file.path(package_path, "man"), pattern = "\\.Rd$", full.names = TRUE)
-  tdir     <- file.path(module_path, "translations")
+  tdir     <- file.path(module_path, "inst", "translations")
   mdir     <- file.path(module_path, "man_original")
   dir.create(tdir, showWarnings = FALSE, recursive = TRUE)
   dir.create(mdir, showWarnings = FALSE, recursive = TRUE)
