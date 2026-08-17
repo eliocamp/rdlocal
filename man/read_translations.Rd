@@ -4,8 +4,16 @@
 \alias{read_translations}
 \title{Read translations from a directory}
 \usage{
-read_translations()
+read_translations(dir = "inst/translations")
+}
+\arguments{
+\item{dir}{Directory of translation \code{.yaml} files (a module's
+\code{inst/translations}).}
+}
+\value{
+A named list of translations, one element per help topic.
 }
 \description{
-Read translations from a directory
+Reads a translation module's \code{.yaml} files into the same list structure the
+runtime uses.
 }
