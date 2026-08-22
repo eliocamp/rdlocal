@@ -36,7 +36,7 @@ rd_remove_untranslatable <- function(rd_flat) {
   rd_flat[!(names(rd_flat) %in% untranslatable)]
 }
 
-rd_flat_class <- "rhelpi18n_rd_flat"
+rd_flat_class <- "rdlocal_rd_flat"
 
 make_text <- function(x, untranslatable) {
   tag <- attr(x, "Rd_tag")

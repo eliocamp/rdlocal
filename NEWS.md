@@ -1,4 +1,4 @@
-# rhelpi18n 0.0.0.9000
+# rdlocal 0.0.0.9000
 
 * `i18n_module_create()` builds a translation-module skeleton from a package's
   help pages, replacing dynamic install/build `\Sexpr` and `#ifdef` spans with

@@ -365,7 +365,7 @@ translate_helpfile <- function(helpfile) {
   
   original <- rd_list(helpfile)
   original$usage <- "mean(x, \\dots{})\n\n\\method{mean}{default}(x, trim = 0, na.rm = FALSE, \\dots{})\n"
-  translation <- yaml::read_yaml("/home/elio/Documents/r-packages/internationalisation/rhelpi18n/notes/mean.es.yaml")
+  translation <- yaml::read_yaml("/home/elio/Documents/r-packages/internationalisation/rdlocal/notes/mean.es.yaml")
   
   translated <- translate(original, translation)
   

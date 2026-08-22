@@ -1,7 +1,7 @@
 # Language resolution against a module's `Language:` field. An exact match wins
 # and is exclusive; otherwise fall back to the root language (split on "_"). This
 # is what keeps zh_CN and zh_TW distinct while sharing the "zh" root.
-rl <- rhelpi18n:::resolve_lang
+rl <- rdlocal:::resolve_lang
 
 assert("exact match wins and is exclusive (zh_CN vs zh_TW stay distinct)", {
   (identical(rl(c("zh_CN", "zh_TW"), "zh_CN"), c(TRUE,  FALSE)))

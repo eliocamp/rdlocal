@@ -16,7 +16,7 @@
 #' as `target_language`. So if `target_language` is `"es_AR"`, then `"es_UY"`,
 #' `"es_ES"` and `"es"` will all return `TRUE`.
 #'
-## Issue: https://github.com/eliocamp/rhelpi18n/issues/9
+## Issue: https://github.com/eliocamp/rdlocal/issues/9
 #' @keywords internal
 resolve_lang <- function(languages, target_language) {
 

@@ -1,7 +1,7 @@
 # {ISEXPR_*} needs no author escaping in normal Rd; only \{ISEXPR_*\} produces a
 # literal, escaped in stored strings as {{ISEXPR_*}}.
-mf         <- rhelpi18n:::match_and_fill
-rd_flatten <- rhelpi18n:::rd_flatten
+mf         <- rdlocal:::match_and_fill
+rd_flatten <- rdlocal:::rd_flatten
 
 flatten <- function(body) {
   f <- tempfile(fileext = ".Rd")
