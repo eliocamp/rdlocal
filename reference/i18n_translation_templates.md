@@ -30,5 +30,5 @@ rd_files <- system.file("extdata", "periodic.Rd", package = "rdlocal")
 template_folder <- tempdir()
 i18n_translation_templates(rd_files, template_folder)
 #> /home/runner/work/_temp/Library/rdlocal/extdata/periodic.Rd 
-#>                             "/tmp/RtmpBXd4eb/periodic.yaml" 
+#>                             "/tmp/RtmpoyafHB/periodic.yaml" 
 ```
