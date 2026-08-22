@@ -8,7 +8,7 @@
 #' @param macros a set of macros definitions.
 #'
 #' @examples
-#' rd_files <- system.file("extdata", "periodic.Rd", package = "rhelpi18n")
+#' rd_files <- system.file("extdata", "periodic.Rd", package = "rdlocal")
 #' template_folder <- tempdir()
 #' i18n_translation_templates(rd_files, template_folder)
 #'

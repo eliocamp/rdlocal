@@ -1,5 +1,5 @@
 # rd_flatten / to_text behaviour that the runtime depends on.
-rd_flatten <- rhelpi18n:::rd_flatten
+rd_flatten <- rdlocal:::rd_flatten
 
 flatten <- function(...) {
   f <- tempfile(fileext = ".Rd")

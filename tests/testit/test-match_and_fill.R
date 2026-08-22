@@ -1,5 +1,5 @@
 # Tests for the runtime placeholder matcher. Strings only, no translation module.
-mf <- rhelpi18n:::match_and_fill
+mf <- rdlocal:::match_and_fill
 
 assert("no-token: exact match and drift fallback", {
   (mf("abc", "abc", "xyz")$text == "xyz")

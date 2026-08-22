@@ -1,4 +1,4 @@
-Package: rhelpi18n
+Package: rdlocal
 Title: Adds Support por Multilingual Help Pages
 Version: 0.0.0.9000
 Authors@R: c(
@@ -25,5 +25,5 @@ Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr
-URL: https://eliocamp.github.io/rhelpi18n/
+URL: https://eliocamp.github.io/rdlocal/
 Config/roxygen2/version: 8.1.0

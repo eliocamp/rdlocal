@@ -14,7 +14,7 @@ More [in this issue](https://github.com/r-devel/r-project-sprint-2023/issues/35)
 Install this package:
 
 ``` r
-pak::pak("eliocamp/rhelpi18n")
+pak::pak("eliocamp/rdlocal")
 ```
 
 Next install a translation module. 
@@ -27,7 +27,7 @@ pak::pak("eliocamp/base.es")
 Setting the LANGAUGE environmental variable to "es" will change your R language. 
 
 ```r
-library(rhelpi18n)
+library(rdlocal)
 Sys.setenv(LANGUAGE = "es")
 ```
 
@@ -35,7 +35,7 @@ Now `base::mean()`'s help page will be displayed in Spanish.
 
 
 <video style="max-height:640px; min-height: 200px" controls>
-  <source src="https://github.com/eliocamp/rhelpi18n/assets/8617595/be3038dd-ac53-4fa7-a0bf-51a5de9a91bf" type="video/mp4">
+  <source src="https://github.com/eliocamp/rdlocal/assets/8617595/be3038dd-ac53-4fa7-a0bf-51a5de9a91bf" type="video/mp4">
 </video>
 
 This will work with the HTML documentation displayed by R GUIs like RStudio, as well as with text documentation displayed by R in the console. 
@@ -48,11 +48,11 @@ Choose your translation **language** by its [ISO 2-letter code](https://en.wikip
 
 or example Spanish would be `language = "es"`, and Argentine Spanish would be `language = "es_AR"`.
 
-Then use `rhelpi18n::i18n_module_create()` to create a **lang** translation **module** for that **package**
+Then use `rdlocal::i18n_module_create()` to create a **lang** translation **module** for that **package**
 
 
 ```r
-rhelpi18n::i18n_module_create(module_name = "package.lang", 
+rdlocal::i18n_module_create(module_name = "package.lang", 
                               language = "lang", 
                               module_path = "path/to/module", 
                               package_path = "path/to/package")

@@ -191,7 +191,7 @@ copy_pkg_template <- function(path, rstudio_project = TRUE) {
     stop("Path to module exists and it's not empty.")
   }
 
-  skeleton <- system.file("extdata", "translation_skeleton", package = "rhelpi18n") |>
+  skeleton <- system.file("extdata", "translation_skeleton", package = "rdlocal") |>
     list.files(full.names = TRUE) |>
     file.copy(path, recursive = TRUE)
 
