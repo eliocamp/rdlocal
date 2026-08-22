@@ -16,6 +16,11 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/reading-translated-help.html">Reading help in your language</a></li>
+    <li><a class="dropdown-item" href="../articles/translating-help.html">Translating a package's help pages</a></li>
+  </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -32,14 +37,19 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="rhelpi18n-development-version">rhelpi18n (development version)<a class="anchor" aria-label="anchor" href="#rhelpi18n-development-version"></a></h2>
-<ul><li>Adds <code><a href="../reference/read_translations.html">read_translations()</a></code> to the package. The output of the function is the list of translation hosted by the translation module. (#14, thanks, @maelle).</li>
+<h2 class="pkg-version" data-toc-text="0.0.0.9000" id="rhelpi18n-0009000">rhelpi18n 0.0.0.9000<a class="anchor" aria-label="anchor" href="#rhelpi18n-0009000"></a></h2>
+<ul><li>
+<code><a href="../reference/i18n_module_create.html">i18n_module_create()</a></code> builds a translation-module skeleton from a package’s help pages, replacing dynamic install/build <code>\Sexpr</code> and <code>#ifdef</code> spans with <code>{ISEXPR_i}</code> placeholders so a translation keeps matching the installed help across reinstalls.</li>
+<li>
+<code><a href="../reference/i18n_module_update.html">i18n_module_update()</a></code> re-syncs a translation module against a newer version of its package: unchanged translations are kept, changed sections are flagged <code>fuzzy</code> for review, new sections are added, and removed ones are dropped.</li>
+<li>Help pages are shown in the reader’s language, with install- and build-time <code>\Sexpr</code> values filled in from the reader’s own installation.</li>
+<li>Added <code><a href="../reference/read_translations.html">read_translations()</a></code> (#14, thanks @maelle).</li>
 </ul></div>
   </main></div>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Elio Campitelli.</p>
+  <p>Developed by Elio Campitelli, Aditya Bansal.</p>
 </div>
 
 <div class="pkgdown-footer-right">

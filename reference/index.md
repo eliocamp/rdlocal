@@ -3,7 +3,9 @@
 ## All functions
 
 - [`i18n_module_create()`](https://eliocamp.github.io/rhelpi18n/reference/i18n_module_create.md)
-  : Creates a translation module
+  : Create a translation module from a local source package
+- [`i18n_module_update()`](https://eliocamp.github.io/rhelpi18n/reference/i18n_module_update.md)
+  : Update a translation module to a newer version of its package
 - [`i18n_translation_templates()`](https://eliocamp.github.io/rhelpi18n/reference/i18n_translation_templates.md)
   : Creates templates for translation
 - [`print(`*`<Rd_flat>`*`)`](https://eliocamp.github.io/rhelpi18n/reference/print.Rd_flat.md)

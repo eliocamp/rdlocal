@@ -1,0 +1,180 @@
+# Translating a package's help pages
+
+This guide is for **translators**: you want to translate the
+*documentation* (help pages) of an R package into another language. You
+never touch the package’s code — you only edit text files.
+
+The example package throughout is `gsocproposal`, a small demo that
+exercises every rhelpi18n feature.
+
+## 1. Get the package *source*
+
+You need the package’s **source** — a folder with a `DESCRIPTION` file
+and a `man/` folder of `.Rd` help files — not the installed version.
+
+``` r
+
+# clone from GitHub, or download+unzip the source tarball from CRAN
+system("git clone https://github.com/someone/gsocproposal.git ~/translate/gsocproposal")
+```
+
+## 2. Generate the translation skeleton
+
+Pick a language code (`es`, `fr`, `zh_CN`, `pt_BR`, …) and run:
+
+``` r
+
+library(rhelpi18n)
+
+i18n_module_create(
+  package_path = "~/translate/gsocproposal",   # the SOURCE folder
+  language     = "es",                          # your language code
+  module_path  = "~/translate/gsocproposal.es"  # where to create the translation
+)
+```
+
+You get a small module package:
+
+    gsocproposal.es/
+      DESCRIPTION            # which package + language this translates
+      R/translation.R        # machinery; don't touch
+      inst/translations/     # ONE .yaml per help page -- your work goes here
+      man_original/          # copies of the original .Rd, for reference
+
+## 3. Anatomy of a translation file
+
+Open `inst/translations/sexpr_install.yaml`:
+
+``` yaml
+description:
+  original: |
+    Output below comes from an install-stage Sexpr (baked to text at install):
+    {ISEXPR_0}
+  translation: ~
+  spans:
+    '0': "installed under R 4.5.3"
+```
+
+| Field | What it is | Edit it? |
+|----|----|----|
+| `original` | the English text, as it appears in the help page | **no** |
+| `translation` | `~` means empty — your translation goes here | **yes** |
+| `spans` | example of what each `{ISEXPR_i}` held at generation time | **no** (a hint) |
+| `ifdef` | on some pages; one entry per platform-specific branch | **yes** |
+
+## 4. The one rule: keep the `{ISEXPR_…}` placeholders
+
+Text that changes every install (a version, a date, a generated list) is
+replaced by a placeholder like `{ISEXPR_0}`. **Copy each placeholder
+into your translation unchanged** — move it where your language needs
+it, but never translate, renumber, or delete it. The `spans:` entry
+tells you what it stands for (an *example* — the real value differs per
+install).
+
+``` yaml
+description:
+  original: |
+    Output below comes from an install-stage Sexpr (baked to text at install):
+    {ISEXPR_0}
+  translation: |
+    La salida de abajo proviene de un Sexpr de etapa install:
+    {ISEXPR_0}
+  spans:
+    '0': "installed under R 4.5.3"
+```
+
+### Platform-specific blocks (`ifdef`)
+
+Pages with `#ifdef`/`#ifndef` show different text per platform.
+Translate each numbered branch in the `ifdef:` table (and keep its
+`{ISEXPR_i}` in `original`):
+
+``` yaml
+description:
+  original: |
+    Text below appears on everything except Windows:
+    {ISEXPR_0}The rest always appears.
+  translation: |
+    El texto de abajo aparece en todo excepto Windows:
+    {ISEXPR_0}El resto siempre aparece.
+  ifdef:
+    '0': ESTA LÍNEA SE MUESTRA EN UNIX Y MACOS (NO WINDOWS).
+```
+
+### Rare: literal braces
+
+If the original shows `{{ISEXPR_0}}` with **double** braces, that’s real
+text the author wrote — keep the double braces as-is.
+
+## 5. Test locally
+
+``` r
+
+install.packages("~/translate/gsocproposal.es", repos = NULL, type = "source")
+# RESTART R (Session -> Restart R), then:
+library(rhelpi18n)
+library(gsocproposal)
+Sys.setLanguage("es")
+?sexpr_install
+```
+
+Always **restart R after installing** — otherwise R may show a stale
+version.
+
+## 6. Publish on GitHub
+
+Your translation module is a small R package; put it on GitHub so others
+can install it.
+
+``` r
+
+system("cd ~/translate/gsocproposal.es && git init && git add . && git commit -m 'Spanish (es) translation'")
+# then create the repo and push (e.g. with the gh CLI)
+system("cd ~/translate/gsocproposal.es && gh repo create gsocproposal.es --public --source=. --push")
+```
+
+Tell users to install it and set `LANGUAGE=es` — see the companion
+vignette, *Reading help in your language*.
+
+## Keeping a translation current
+
+When the package releases a new version, re-sync your module against the
+new source:
+
+``` r
+
+i18n_module_update(
+  module_path  = "~/translate/gsocproposal.es",  # your module
+  package_path = "~/translate/gsocproposal"       # the new source
+)
+```
+
+Preview first with `dry_run = TRUE` — it reports what would change
+without touching your files:
+
+    5 unchanged  |  2 fuzzy  |  1 new  |  1 dropped
+
+- **unchanged** — kept exactly as you left them.
+- **new** — a section added in the new version, waiting with an empty
+  `translation:`.
+- **dropped** — a section that no longer exists; its translation is
+  removed.
+- **fuzzy** — the original text changed. Your old translation is kept
+  but marked `fuzzy: yes`, with the old text in `previous_original:` so
+  you can see what changed. Update the `translation:`, then **delete the
+  `fuzzy:` and `previous_original:` lines**. Until you do, readers see
+  your translation with a small “may be out of date” note that reveals
+  the current original.
+
+## Language codes
+
+Codes follow gettext’s `ll_CC` form — a lowercase [ISO 639 language
+code](https://www.gnu.org/software/gettext/manual/html_node/Usual-Language-Codes.html)
+(or a [three-letter
+code](https://www.gnu.org/software/gettext/manual/html_node/Rare-Language-Codes.html)
+for rarer languages), optionally plus an uppercase [ISO 3166 territory
+code](https://www.gnu.org/software/gettext/manual/html_node/Country-Codes.html).
+Use an **underscore**, not a hyphen (`zh_CN`, not `zh-CN`); `zh_CN`
+(Simplified) and `zh_TW` (Traditional) are distinct. The module *name*
+gets dots automatically (`gsocproposal.zh.CN`) — that’s fine; the real
+tag lives in the module’s `Language:` field.

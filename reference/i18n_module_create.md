@@ -1,40 +1,68 @@
-# Creates a translation module
+# Create a translation module from a local source package
 
-Creates a translation module skeleton form a source package with the
-translation templates with the original strings and the proper functions
-to load translations.
+Creates a translation module from a source package. The `original`
+strings are *scaffolds*: dynamic install/build `\Sexpr` (and
+`#ifdef`/`#ifndef`) spans are replaced by `{ISEXPR_i}` placeholders, so
+a human's translation keeps matching the installed help across
+reinstalls (an install-stage `\Sexpr` bakes a different value each
+install, which a plain exact-string template can never match). The
+translator fills in the `translation:` fields and leaves the
+`{ISEXPR_i}` tokens in place. Each section also carries a `spans:` map
+showing an example of what each token held at generation time (the real
+value differs per install), so the translator knows what a `{ISEXPR_i}`
+stands for.
 
 ## Usage
 
 ``` r
 i18n_module_create(
-  module_name = NULL,
-  language,
-  module_path = file.path(".", module_name),
   package_path,
+  language,
+  module_name = NULL,
+  module_path = file.path(".", module_name),
   rstudio_project = TRUE
 )
 ```
 
 ## Arguments
 
-- module_name:
+- package_path:
 
-  Name of the translation module. It needs to be a valid package name.
-  If missing, it will be created as the name of the package.language.
+  Path to the local source package to translate.
 
 - language:
 
-  Language of the translation module
+  Language code, e.g. `"es"`.
+
+- module_name:
+
+  Module package name. Defaults to `<package>.<language>`, with
+  non-alphanumerics in `language` collapsed to `"."` (so `"en-GB"` gives
+  `pkg.en.GB`); the real tag is kept in the module's `Language:` field.
 
 - module_path:
 
-  Path where the module will be created.
-
-- package_path:
-
-  Path to the package that will be translated.
+  Directory to create the module in.
 
 - rstudio_project:
 
-  Logical indicating whether to create an .Rproj file.
+  Whether to create an `.Rproj` file.
+
+## Value
+
+(invisibly) the module path.
+
+## Details
+
+Building the scaffolds needs both the *source* Rd (dynamic nodes still
+live) and the *baked* Rd (values resolved). The source is taken from
+`package_path`; the baked tree is obtained by installing that source
+into a temporary library and reading its `Rd_db`.
+
+If a topic cannot be scaffolded because its source and installed help do
+not align, it falls back to a plain template (the flattened source, no
+placeholders) marked `needs_review: yes`. Topics missing from the
+installed help, or whose source cannot be parsed, are omitted. Either
+way the affected topics are listed in a
+[`warning()`](https://rdrr.io/r/base/warning.html), so the skeleton is
+never silently left incomplete.
