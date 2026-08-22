@@ -7,9 +7,16 @@ rd_flat_read <- function(file) {
 
 
 #' @export
-translations <- (function() {
-  files <- list.files("translations/", full.names = TRUE)
-  translations <- lapply(files, rd_flat_read)
-  names(translations) <- tools::file_path_sans_ext(basename(files))
-  translations
-})()
+translations <- NULL
+
+# Loaded from inst/translations/*.yaml -- a standard, install-safe location, so
+# every field (including `fuzzy` flags) survives installation. A top-level
+# translations/ directory would be stripped as non-standard on install.
+.onLoad <- function(libname, pkgname) {
+  dir <- system.file("translations", package = pkgname)
+  if (!nzchar(dir)) return(invisible())
+  files <- list.files(dir, pattern = "\\.yaml$", full.names = TRUE)
+  tr <- lapply(files, rd_flat_read)
+  names(tr) <- tools::file_path_sans_ext(basename(files))
+  utils::assignInMyNamespace("translations", tr)
+}

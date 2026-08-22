@@ -2,30 +2,53 @@
 % Please edit documentation in R/module-create.R
 \name{i18n_module_create}
 \alias{i18n_module_create}
-\title{Creates a translation module}
+\title{Create a translation module from a local source package}
 \usage{
 i18n_module_create(
-  module_name = NULL,
-  language,
-  module_path = file.path(".", module_name),
   package_path,
+  language,
+  module_name = NULL,
+  module_path = file.path(".", module_name),
   rstudio_project = TRUE
 )
 }
 \arguments{
-\item{module_name}{Name of the translation module. It needs to be a valid
-package name. If missing, it will be created as the name of the package.language.}
+\item{package_path}{Path to the local source package to translate.}
 
-\item{language}{Language of the translation module}
+\item{language}{Language code, e.g. \code{"es"}.}
 
-\item{module_path}{Path where the module will be created.}
+\item{module_name}{Module package name. Defaults to \verb{<package>.<language>},
+with non-alphanumerics in \code{language} collapsed to \code{"."} (so \code{"en-GB"} gives
+\code{pkg.en.GB}); the real tag is kept in the module's \verb{Language:} field.}
 
-\item{package_path}{Path to the package that will be translated.}
+\item{module_path}{Directory to create the module in.}
 
-\item{rstudio_project}{Logical indicating whether to create an .Rproj file.}
+\item{rstudio_project}{Whether to create an \code{.Rproj} file.}
+}
+\value{
+(invisibly) the module path.
 }
 \description{
-Creates a translation module skeleton form a source package with the
-translation templates with the original strings and the proper
-functions to load translations.
+Creates a translation module from a source package. The \code{original} strings are
+\emph{scaffolds}: dynamic install/build \verb{\\Sexpr} (and \verb{#ifdef}/\verb{#ifndef}) spans are
+replaced by \code{{ISEXPR_i}} placeholders, so a human's translation keeps matching
+the installed help across reinstalls (an install-stage \verb{\\Sexpr} bakes a
+different value each install, which a plain exact-string template can never
+match). The translator fills in the \verb{translation:} fields and leaves the
+\code{{ISEXPR_i}} tokens in place. Each section also carries a \verb{spans:} map showing
+an example of what each token held at generation time (the real value differs
+per install), so the translator knows what a \code{{ISEXPR_i}} stands for.
+}
+\details{
+Building the scaffolds needs both the \emph{source} Rd (dynamic nodes still live)
+and the \emph{baked} Rd (values resolved). The source is taken from \code{package_path};
+the baked tree is obtained by installing that source into a temporary library
+and reading its \code{Rd_db}.
+
+If a topic cannot be scaffolded because its source and installed help do not
+align, it falls back to a plain template (the flattened source, no
+placeholders) marked \code{needs_review: yes}. Topics missing from the installed
+help, or whose source cannot be parsed, are omitted. Either way the affected
+topics are listed in a \code{warning()}, so the skeleton is never silently left
+incomplete.
 }
