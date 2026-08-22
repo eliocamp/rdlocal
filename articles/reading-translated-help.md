@@ -9,7 +9,7 @@ their own language. Nothing here changes how your code runs — only what
 ``` r
 
 remotes::install_github("SOMEONE/gsocproposal.es")   # 1. install a translation
-library(rhelpi18n); Sys.setLanguage("es"); ?greet    # 2. load, pick a language, read
+library(rdlocal); Sys.setLanguage("es"); ?greet    # 2. load, pick a language, read
 ```
 
 The rest explains each step.
@@ -66,12 +66,12 @@ that `zh_CN` and `zh_TW` are treated as different languages.
 
 ## 3. Load the engine and read
 
-Load **rhelpi18n** in every R session where you want translated help —
-it is what makes `?` look for a translation:
+Load **rdlocal** in every R session where you want translated help — it
+is what makes `?` look for a translation:
 
 ``` r
 
-library(rhelpi18n)
+library(rdlocal)
 library(gsocproposal)
 ?greet
 ```
@@ -102,8 +102,7 @@ No reinstall needed to switch — just change the language.
 ## Troubleshooting
 
 - **Still English?** Check that `Sys.getenv("LANGUAGE")` is set and that
-  [`library(rhelpi18n)`](https://eliocamp.github.io/rhelpi18n/) is
-  loaded.
+  [`library(rdlocal)`](https://eliocamp.github.io/rdlocal/) is loaded.
 - **Some sections translated, some not?** That translation is
   incomplete, or the package was updated since it was written.
 - **List what translations you have:**

@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Adds Support por Multilingual Help Pages • rhelpi18n</title>
+<title>Adds Support por Multilingual Help Pages • rdlocal</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -20,7 +20,7 @@
 
     <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
 
-    <a class="navbar-brand me-2" href="index.html">rhelpi18n</a>
+    <a class="navbar-brand me-2" href="index.html">rdlocal</a>
 
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
 
@@ -63,16 +63,16 @@
 </h2>
 <p>Install this package:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"eliocamp/rhelpi18n"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"eliocamp/rdlocal"</span><span class="op">)</span></span></code></pre></div>
 <p>Next install a translation module. The <a href="https://github.com/eliocamp/base.es" class="external-link">base.es</a> package hosts translations for <code><a href="https://rdrr.io/r/base/mean.html" class="external-link">base::mean()</a></code> as an example, install it with</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"eliocamp/base.es"</span><span class="op">)</span></span></code></pre></div>
 <p>Setting the LANGAUGE environmental variable to “es” will change your R language.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://eliocamp.github.io/rhelpi18n/">rhelpi18n</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://eliocamp.github.io/rdlocal/">rdlocal</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>LANGUAGE <span class="op">=</span> <span class="st">"es"</span><span class="op">)</span></span></code></pre></div>
 <p>Now <code><a href="https://rdrr.io/r/base/mean.html" class="external-link">base::mean()</a></code>’s help page will be displayed in Spanish.</p>
-<video style="max-height:640px; min-height: 200px" controls><source src="https://github.com/eliocamp/rhelpi18n/assets/8617595/be3038dd-ac53-4fa7-a0bf-51a5de9a91bf" type="video/mp4" srcset="NA"></source></video><p>This will work with the HTML documentation displayed by R GUIs like RStudio, as well as with text documentation displayed by R in the console.</p>
+<video style="max-height:640px; min-height: 200px" controls><source src="https://github.com/eliocamp/rdlocal/assets/8617595/be3038dd-ac53-4fa7-a0bf-51a5de9a91bf" type="video/mp4" srcset="NA"></source></video><p>This will work with the HTML documentation displayed by R GUIs like RStudio, as well as with text documentation displayed by R in the console.</p>
 </div>
 <div class="section level2">
 <h2 id="for-package-developers">For package developers<a class="anchor" aria-label="anchor" href="#for-package-developers"></a>
@@ -80,9 +80,9 @@
 <p>First get a copy of the package you want to translate.</p>
 <p>Choose your translation <strong>language</strong> by its <a href="https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes" class="external-link">ISO 2-letter code</a> eventually with a regional option using underscore:</p>
 <p>or example Spanish would be <code>language = "es"</code>, and Argentine Spanish would be <code>language = "es_AR"</code>.</p>
-<p>Then use <code><a href="reference/i18n_module_create.html">rhelpi18n::i18n_module_create()</a></code> to create a <strong>lang</strong> translation <strong>module</strong> for that <strong>package</strong></p>
+<p>Then use <code><a href="reference/i18n_module_create.html">rdlocal::i18n_module_create()</a></code> to create a <strong>lang</strong> translation <strong>module</strong> for that <strong>package</strong></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">rhelpi18n</span><span class="fu">::</span><span class="fu"><a href="reference/i18n_module_create.html">i18n_module_create</a></span><span class="op">(</span>module_name <span class="op">=</span> <span class="st">"package.lang"</span>, </span>
+<code class="sourceCode R"><span><span class="fu">rdlocal</span><span class="fu">::</span><span class="fu"><a href="reference/i18n_module_create.html">i18n_module_create</a></span><span class="op">(</span>module_name <span class="op">=</span> <span class="st">"package.lang"</span>, </span>
 <span>                              language <span class="op">=</span> <span class="st">"lang"</span>, </span>
 <span>                              module_path <span class="op">=</span> <span class="st">"path/to/module"</span>, </span>
 <span>                              package_path <span class="op">=</span> <span class="st">"path/to/package"</span><span class="op">)</span></span></code></pre></div>
@@ -124,7 +124,7 @@
 <div class="citation">
 <h2 data-toc-skip>Citation</h2>
 <ul class="list-unstyled">
-<li><a href="authors.html#citation">Citing rhelpi18n</a></li>
+<li><a href="authors.html#citation">Citing rdlocal</a></li>
 </ul>
 </div>
 

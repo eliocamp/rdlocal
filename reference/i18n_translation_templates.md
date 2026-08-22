@@ -26,9 +26,9 @@ i18n_translation_templates(rd_files, folder, macros = NULL)
 ## Examples
 
 ``` r
-rd_files <- system.file("extdata", "periodic.Rd", package = "rhelpi18n")
+rd_files <- system.file("extdata", "periodic.Rd", package = "rdlocal")
 template_folder <- tempdir()
 i18n_translation_templates(rd_files, template_folder)
-#> /home/runner/work/_temp/Library/rhelpi18n/extdata/periodic.Rd 
-#>                               "/tmp/RtmpCHCIAn/periodic.yaml" 
+#> /home/runner/work/_temp/Library/rdlocal/extdata/periodic.Rd 
+#>                             "/tmp/RtmpBXd4eb/periodic.yaml" 
 ```

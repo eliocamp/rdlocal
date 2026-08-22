@@ -12,7 +12,7 @@ Install this package:
 
 ``` r
 
-pak::pak("eliocamp/rhelpi18n")
+pak::pak("eliocamp/rdlocal")
 ```
 
 Next install a translation module. The
@@ -30,7 +30,7 @@ language.
 
 ``` r
 
-library(rhelpi18n)
+library(rdlocal)
 Sys.setenv(LANGUAGE = "es")
 ```
 
@@ -53,12 +53,12 @@ or example Spanish would be `language = "es"`, and Argentine Spanish
 would be `language = "es_AR"`.
 
 Then use
-[`rhelpi18n::i18n_module_create()`](https://eliocamp.github.io/rhelpi18n/reference/i18n_module_create.md)
+[`rdlocal::i18n_module_create()`](https://eliocamp.github.io/rdlocal/reference/i18n_module_create.md)
 to create a **lang** translation **module** for that **package**
 
 ``` r
 
-rhelpi18n::i18n_module_create(module_name = "package.lang", 
+rdlocal::i18n_module_create(module_name = "package.lang", 
                               language = "lang", 
                               module_path = "path/to/module", 
                               package_path = "path/to/package")

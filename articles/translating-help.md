@@ -5,7 +5,7 @@ This guide is for **translators**: you want to translate the
 never touch the package’s code — you only edit text files.
 
 The example package throughout is `gsocproposal`, a small demo that
-exercises every rhelpi18n feature.
+exercises every rdlocal feature.
 
 ## 1. Get the package *source*
 
@@ -24,7 +24,7 @@ Pick a language code (`es`, `fr`, `zh_CN`, `pt_BR`, …) and run:
 
 ``` r
 
-library(rhelpi18n)
+library(rdlocal)
 
 i18n_module_create(
   package_path = "~/translate/gsocproposal",   # the SOURCE folder
@@ -112,7 +112,7 @@ text the author wrote — keep the double braces as-is.
 
 install.packages("~/translate/gsocproposal.es", repos = NULL, type = "source")
 # RESTART R (Session -> Restart R), then:
-library(rhelpi18n)
+library(rdlocal)
 library(gsocproposal)
 Sys.setLanguage("es")
 ?sexpr_install

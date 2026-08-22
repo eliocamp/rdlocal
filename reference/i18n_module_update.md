@@ -1,7 +1,7 @@
 # Update a translation module to a newer version of its package
 
 Re-syncs an existing translation module (made with
-[`i18n_module_create()`](https://eliocamp.github.io/rhelpi18n/reference/i18n_module_create.md))
+[`i18n_module_create()`](https://eliocamp.github.io/rdlocal/reference/i18n_module_create.md))
 against a newer version of the package it translates. A fresh scaffold
 is generated from the new source and merged into the existing module,
 per section and per `\arguments` item:
@@ -56,4 +56,4 @@ left untouched.
 
 ## See also
 
-[`i18n_module_create()`](https://eliocamp.github.io/rhelpi18n/reference/i18n_module_create.md)
+[`i18n_module_create()`](https://eliocamp.github.io/rdlocal/reference/i18n_module_create.md)

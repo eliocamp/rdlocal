@@ -12,14 +12,14 @@
 
 ## Citation
 
-Campitelli E, Bansal A (2026). *rhelpi18n: Adds Support por Multilingual
+Campitelli E, Bansal A (2026). *rdlocal: Adds Support por Multilingual
 Help Pages*. R package version 0.0.0.9000,
-<https://eliocamp.github.io/rhelpi18n/>.
+<https://eliocamp.github.io/rdlocal/>.
 
     @Manual{,
-      title = {rhelpi18n: Adds Support por Multilingual Help Pages},
+      title = {rdlocal: Adds Support por Multilingual Help Pages},
       author = {Elio Campitelli and Aditya Bansal},
       year = {2026},
       note = {R package version 0.0.0.9000},
-      url = {https://eliocamp.github.io/rhelpi18n/},
+      url = {https://eliocamp.github.io/rdlocal/},
     }
