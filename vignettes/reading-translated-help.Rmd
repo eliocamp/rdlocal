@@ -11,43 +11,67 @@ vignette: >
 knitr::opts_chunk$set(eval = FALSE, comment = "#>")
 ```
 
-This guide is for **R users** who would rather read documentation in their own language.
-Nothing here changes how your code runs — only what `?function` shows.
+This guide is for **R users** who want to read documentation in their own language.
 
-## The whole thing
+# The sort version
+
+There are 2 steps to get documentation in your language.
+
+1. Install a translation module (once per machine)
+2. Load rdlocal and set R's language (once per session)
+
+# The longer version
+
+## Translation modules. 
+
+The rdlocal package adds support for **translation modules** that provide translated documentation for a package to a particular language. 
+Translation modules are made by the community and installed like regular packages. 
+
+For this vignette, we are going to use a sample package prepared as demonstration. 
 
 ```{r}
-remotes::install_github("SOMEONE/gsocproposal.es")   # 1. install a translation
-library(rdlocal); Sys.setLanguage("es"); ?greet    # 2. load, pick a language, read
+# Install the gsocproposal package
+remotes::install_github("adit-0132/multilingual-docs") 
 ```
 
-The rest explains each step.
-
-## 1. Install the package and a translation
+There is a translation module for this package to Spanish in the `spanish` branch. 
 
 ```{r}
-install.packages("gsocproposal")                    # the package (however you normally would)
-remotes::install_github("SOMEONE/gsocproposal.es")  # a Spanish translation module
+# Install the translation module
+remotes::install_github("adit-0132/multilingual-docs@spanish")
 ```
 
-Translations ship as their own small packages, usually named `<package>.<language>`.
-Install as many as you like — one per language, or for different packages; they don't conflict.
-If none exists for your package and language, the original package help will be shown as normal.
+You can install as many translation modules as you want. 
+Each translation module translates one package into one language. 
+If no translation module exists for a particular package or language, then the original package help will be shown as normal.
 
-## 2. Choose your language
-
-Set the help language with base R's `Sys.setLanguage()`.
-It applies to the current session only — restarting R reverts it — so to make it permanent add it to `.Renviron`:
+The gsocproposal package has a `greet` object with sample documentation
 
 ```{r}
-# this session only:
+?gsocproposal::greet
+```
+
+## Loading rdlocal and setting langauge
+
+To enable translated documentation you need to load the rdlocal package.
+And to change you R language to Spanish, you need to set the language. 
+
+```{r}
+library(rdlocal)
 Sys.setLanguage("es")
-
-# permanently: add a line to ~/.Renviron
-usethis::edit_r_environ()   # add:  LANGUAGE=es
 ```
 
 This also switches the language of R's own messages, warnings and errors, wherever a localisation for them exists.
+
+Now the documentation will be in Spanish
+
+```{r}
+?gsocproposal::greet
+```
+
+
+Language codes are two-letter codes optionally followed by a two-letter contry code separated by underscore. 
+Some examples are:
 
 | Language             | `LANGUAGE` |
 |----------------------|------------|
@@ -61,39 +85,36 @@ This also switches the language of R's own messages, warnings and errors, wherev
 Codes follow gettext's `ll_CC` form — a lowercase [ISO 639 language code](https://www.gnu.org/software/gettext/manual/html_node/Usual-Language-Codes.html) (or a [three-letter code](https://www.gnu.org/software/gettext/manual/html_node/Rare-Language-Codes.html) for rarer languages), optionally plus an uppercase [ISO 3166 territory code](https://www.gnu.org/software/gettext/manual/html_node/Country-Codes.html).
 So use an **underscore, not a hyphen** (`zh_CN`, not `zh-CN`), and note that `zh_CN` and `zh_TW` are treated as different languages.
 
-## 3. Load the engine and read
+The language change applies to the current session; 
+New sessions will revert to the default language. 
+To make it permanent, you need to add it to `.Rprofile`:
 
-Load **rdlocal** in every R session where you want translated help — it is what makes `?` look for a translation:
+Run
 
 ```{r}
-library(rdlocal)
-library(gsocproposal)
-?greet
+usethis::edit_r_profile()   # add:  LANGUAGE=es
 ```
 
-The help pane now shows the translated page, with any version- or date-specific bits filled in with the real, current value.
-Untranslated sections are shown in the original language.
+And add this:
 
-## Seeing the original English again
+```{r}
+if (requireNamespace("rdlocal", quietly = TRUE)) {
+  library(rdlocal)
+  Sys.setLanguage("es")
+}
+```
 
 To see the help page in the original language, change your language to a language with no translation installed (the default is `"en"`):
 
 ```{r}
-Sys.setLanguage("en"); ?greet
+Sys.setLanguage("en")
+?gsocproposal::greet
 ```
-
-## Switching languages
-
-```{r}
-Sys.setLanguage("fr"); ?greet   # French
-```
-
-No reinstall needed to switch — just change the language.
 
 ## Troubleshooting
 
 - **Still English?** Check that `Sys.getenv("LANGUAGE")` is set and that `library(rdlocal)` is loaded.
-- **Some sections translated, some not?** That translation is incomplete, or the package was updated since it was written.
+- **Some sections translated, some not?** Sections with incomplete or outdated translations are shown in the original language. 
 - **List what translations you have:**
 
 ```{r}
