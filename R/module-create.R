@@ -167,7 +167,7 @@ baked_rd_db <- function(package_path, package) {
   dir.create(lib)
 
   old_libpaths <- .libPaths()
-  # .libPaths(c(lib, old_libpaths), include.site = FALSE)
+  .libPaths(c(lib, old_libpaths), include.site = FALSE)
 
   on.exit(
     .libPaths(old_libpaths, include.site = FALSE)
