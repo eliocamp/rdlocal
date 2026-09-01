@@ -32,28 +32,47 @@
 #'
 #' @return (invisibly) the module path.
 #' @export
-i18n_module_create <- function(package_path, language, module_name = NULL,
-                               module_path = file.path(".", module_name),
-                               rstudio_project = TRUE) {
+i18n_module_create <- function(
+  package_path,
+  language,
+  module_name = NULL,
+  module_path = file.path(".", module_name),
+  rstudio_project = TRUE
+) {
   package <- get_package_name(package_path)
   version <- get_package_version(package_path)
 
   if (is.null(module_name)) {
-    module_name <- paste(package, gsub("[^[:alnum:]]+", ".", language), sep = ".")
+    module_name <- paste(
+      package,
+      gsub("[^[:alnum:]]+", ".", language),
+      sep = "."
+    )
   }
   if (!valid_package_name(module_name)) {
     stop(module_name, " is not a valid package name")
   }
 
-  copy_pkg_template(module_path,
-                    rstudio_project = if (isTRUE(rstudio_project)) module_name else NULL)
-  modify_description(module_path, module_name = module_name, package = package,
-                     version = version, language = language)
+  copy_pkg_template(
+    module_path,
+    rstudio_project = if (isTRUE(rstudio_project)) module_name else NULL
+  )
+  modify_description(
+    module_path,
+    module_name = module_name,
+    package = package,
+    version = version,
+    language = language
+  )
 
-  macros   <- tools::loadPkgRdMacros(package_path)
-  rd_files <- list.files(file.path(package_path, "man"), pattern = "\\.Rd$", full.names = TRUE)
-  tdir     <- file.path(module_path, "inst", "translations")
-  mdir     <- file.path(module_path, "man_original")
+  macros <- tools::loadPkgRdMacros(package_path)
+  rd_files <- list.files(
+    file.path(package_path, "man"),
+    pattern = "\\.Rd$",
+    full.names = TRUE
+  )
+  tdir <- file.path(module_path, "inst", "translations")
+  mdir <- file.path(module_path, "man_original")
   dir.create(tdir, showWarnings = FALSE, recursive = TRUE)
   dir.create(mdir, showWarnings = FALSE, recursive = TRUE)
 
@@ -61,25 +80,32 @@ i18n_module_create <- function(package_path, language, module_name = NULL,
   # build/install-stage \Sexpr are resolved, then read its Rd_db.
   baked <- baked_rd_db(package_path, package)
 
-  omitted <- character(0)   # topic -> why no template could be written
-  review  <- character(0)   # topics that fell back to a plain template
+  omitted <- character(0) # topic -> why no template could be written
+  review <- character(0) # topics that fell back to a plain template
 
   for (rd_file in rd_files) {
-    topic    <- basename(rd_file)
-    out_yaml <- file.path(tdir, paste0(tools::file_path_sans_ext(topic), ".yaml"))
+    topic <- basename(rd_file)
+    out_yaml <- file.path(
+      tdir,
+      paste0(tools::file_path_sans_ext(topic), ".yaml")
+    )
 
     if (is.null(baked[[topic]])) {
       omitted[topic] <- "not present in the installed package"
       next
     }
-    src_rd <- tryCatch(tools::parse_Rd(rd_file, macros = macros),
-                       error = function(e) conditionMessage(e))
+    src_rd <- tryCatch(
+      tools::parse_Rd(rd_file, macros = macros),
+      error = function(e) conditionMessage(e)
+    )
     if (is.character(src_rd)) {
       omitted[topic] <- paste0("source Rd could not be parsed (", src_rd, ")")
       next
     }
-    sca <- tryCatch(detect_scaffolds(src_rd, baked[[topic]]),
-                    error = function(e) conditionMessage(e))
+    sca <- tryCatch(
+      detect_scaffolds(src_rd, baked[[topic]]),
+      error = function(e) conditionMessage(e)
+    )
 
     if (is.character(sca)) {
       # Source and installed help could not be aligned: fall back to a plain
@@ -87,7 +113,7 @@ i18n_module_create <- function(package_path, language, module_name = NULL,
       write_plain_template(rd_file, out_yaml, macros)
       review <- c(review, topic)
     } else if (length(sca) == 0) {
-      next   # nothing translatable on this page (e.g. metadata-only): skip quietly
+      next # nothing translatable on this page (e.g. metadata-only): skip quietly
     } else {
       yaml::write_yaml(scaffold_template(sca), out_yaml)
     }
@@ -113,13 +139,22 @@ write_plain_template <- function(rd_file, out_yaml, macros) {
 report_incomplete <- function(review, omitted, total) {
   parts <- character(0)
   if (length(review)) {
-    parts <- c(parts, sprintf(
-      "%d of %d topic(s) could not be scaffolded; a plain template (needs_review) was written for: %s",
-      length(review), total, paste(review, collapse = ", ")))
+    parts <- c(
+      parts,
+      sprintf(
+        "%d of %d topic(s) could not be scaffolded; a plain template (needs_review) was written for: %s",
+        length(review),
+        total,
+        paste(review, collapse = ", ")
+      )
+    )
   }
   if (length(omitted)) {
-    parts <- c(parts, sprintf("%d topic(s) omitted:", length(omitted)),
-               paste0("  - ", names(omitted), ": ", omitted))
+    parts <- c(
+      parts,
+      sprintf("%d topic(s) omitted:", length(omitted)),
+      paste0("  - ", names(omitted), ": ", omitted)
+    )
   }
   if (length(parts)) warning(paste(parts, collapse = "\n"), call. = FALSE)
 }
@@ -162,13 +197,17 @@ scaffold_template <- function(sca) {
     if (length(node$spans)) {
       entry$spans <- stats::setNames(
         lapply(node$spans, function(s) s$baked_value),
-        vapply(node$spans, function(s) as.character(s$i), character(1)))
+        vapply(node$spans, function(s) as.character(s$i), character(1))
+      )
     }
-    ifdef_i <- unlist(lapply(node$spans, function(s)
-      if (identical(s$kind, "ifdef")) s$i else NULL))
+    ifdef_i <- unlist(lapply(node$spans, function(s) {
+      if (identical(s$kind, "ifdef")) s$i else NULL
+    }))
     if (length(ifdef_i)) {
-      entry$ifdef <- stats::setNames(as.list(rep("", length(ifdef_i))),
-                                     as.character(ifdef_i))
+      entry$ifdef <- stats::setNames(
+        as.list(rep("", length(ifdef_i))),
+        as.character(ifdef_i)
+      )
     }
     entry
   }
@@ -179,7 +218,9 @@ scaffold_template <- function(sca) {
       out[[sec]] <- conv1(x)
     } else {
       items <- list()
-      for (nm in names(x)) items[[nm]] <- conv1(x[[nm]])
+      for (nm in names(x)) {
+        items[[nm]] <- conv1(x[[nm]])
+      }
       out[[sec]] <- items
     }
   }
@@ -204,15 +245,21 @@ copy_pkg_template <- function(path, rstudio_project = TRUE) {
     stop("Path to module exists and it's not empty.")
   }
 
-  skeleton <- system.file("extdata", "translation_skeleton", package = "rdlocal") |>
+  skeleton <- system.file(
+    "extdata",
+    "translation_skeleton",
+    package = "rdlocal"
+  ) |>
     list.files(full.names = TRUE) |>
     file.copy(path, recursive = TRUE)
 
   if (is.null(rstudio_project)) {
     file.remove(file.path(path, "skeleton.Rproj"))
   } else {
-    file.rename(file.path(path, "skeleton.Rproj"),
-                file.path(path, paste0(rstudio_project, ".Rproj")))
+    file.rename(
+      file.path(path, "skeleton.Rproj"),
+      file.path(path, paste0(rstudio_project, ".Rproj"))
+    )
   }
   return(path)
 }
@@ -222,11 +269,14 @@ modify_description <- function(path, module_name, package, version, language) {
   description_file <- file.path(path, "DESCRIPTION")
   description_template <- paste0(readLines(description_file), collapse = "\n")
 
-  description_text <- whisker::whisker.render(description_template, data = list(
-    module_name = module_name,
-    package_version = paste0(package, " (== ", version, ")"),
-    language = language
-  ))
+  description_text <- whisker::whisker.render(
+    description_template,
+    data = list(
+      module_name = module_name,
+      package_version = paste0(package, " (== ", version, ")"),
+      language = language
+    )
+  )
   writeLines(description_text, description_file)
 }
 
