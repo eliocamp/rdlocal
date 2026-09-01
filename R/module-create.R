@@ -127,10 +127,23 @@ report_incomplete <- function(review, omitted, total) {
 # Install a local source package into a throwaway library (under tempdir(), which
 # the session cleans up) and return its Rd_db (build/install \Sexpr resolved).
 baked_rd_db <- function(package_path, package) {
+  # this is not great for packages with lots of dependencies
   lib <- tempfile("i18nlib")
   dir.create(lib)
-  utils::install.packages(package_path, repos = NULL, type = "source",
-                          lib = lib, quiet = TRUE)
+
+  old_libpaths <- .libPaths()
+  .libPaths(c(lib, old_libpaths), include.site = FALSE)
+
+  on.exit(
+    .libPaths(old_libpaths, include.site = FALSE)
+  )
+
+  remotes::install_local(
+    path = package_path,
+    force = TRUE,
+    lib = lib,
+    upgrade = "never"
+  )
   tools::Rd_db(package, lib.loc = lib)
 }
 
