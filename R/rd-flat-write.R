@@ -17,4 +17,3 @@ rd_flat_write <- function(rd_flat, file) {
   rd_flat[["untranslatable"]] <- untranslatable
   yaml::write_yaml(rd_flat, file)
 }
-

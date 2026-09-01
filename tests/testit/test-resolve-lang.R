@@ -4,7 +4,7 @@
 rl <- rdlocal:::resolve_lang
 
 assert("exact match wins and is exclusive (zh_CN vs zh_TW stay distinct)", {
-  (identical(rl(c("zh_CN", "zh_TW"), "zh_CN"), c(TRUE,  FALSE)))
+  (identical(rl(c("zh_CN", "zh_TW"), "zh_CN"), c(TRUE, FALSE)))
   (identical(rl(c("zh_CN", "zh_TW"), "zh_TW"), c(FALSE, TRUE)))
   (identical(rl(c("es", "en"), "es"), c(TRUE, FALSE)))
   # an exact hit suppresses the root-language fallback:
@@ -12,9 +12,9 @@ assert("exact match wins and is exclusive (zh_CN vs zh_TW stay distinct)", {
 })
 
 assert("root-language fallback when there is no exact match", {
-  (identical(rl(c("zh_CN", "zh_TW"), "zh"), c(TRUE, TRUE)))                # zh   -> both
+  (identical(rl(c("zh_CN", "zh_TW"), "zh"), c(TRUE, TRUE))) # zh   -> both
   (identical(rl(c("es_UY", "es_ES", "es"), "es_AR"), c(TRUE, TRUE, TRUE))) # es_AR -> all es*
-  (identical(rl(c("es_AR", "en"), "es"), c(TRUE, FALSE)))                  # es   -> es_AR
+  (identical(rl(c("es_AR", "en"), "es"), c(TRUE, FALSE))) # es   -> es_AR
 })
 
 assert("no match returns all FALSE", {

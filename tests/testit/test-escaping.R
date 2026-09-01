@@ -1,6 +1,6 @@
 # {ISEXPR_*} needs no author escaping in normal Rd; only \{ISEXPR_*\} produces a
 # literal, escaped in stored strings as {{ISEXPR_*}}.
-mf         <- rdlocal:::match_and_fill
+mf <- rdlocal:::match_and_fill
 rd_flatten <- rdlocal:::rd_flatten
 
 flatten <- function(body) {
@@ -19,9 +19,14 @@ assert("Rd-escaped braces \\{ \\} are the only way to emit a literal {ISEXPR_0}"
 })
 
 assert("a raw literal in a scaffold is mis-read (the exotic collision)", {
-  (grepl("X", mf("Here: X.", "Here: {ISEXPR_0}.", "Aqui: {ISEXPR_0}.")$text, fixed = TRUE))
+  (grepl(
+    "X",
+    mf("Here: X.", "Here: {ISEXPR_0}.", "Aqui: {ISEXPR_0}.")$text,
+    fixed = TRUE
+  ))
 })
 
 assert("doubling the braces {{ISEXPR_0}} escapes the literal", {
-  (mf("Here: {ISEXPR_0}.", "Here: {{ISEXPR_0}}.", "Aqui: {{ISEXPR_0}}.")$text == "Aqui: {ISEXPR_0}.")
+  (mf("Here: {ISEXPR_0}.", "Here: {{ISEXPR_0}}.", "Aqui: {{ISEXPR_0}}.")$text ==
+    "Aqui: {ISEXPR_0}.")
 })

@@ -10,14 +10,16 @@
 #' @param untranslatable character vector of fields that should not be translated.
 #'
 #' @keywords internal
-rd_flatten <- function(Rd,
-                       untranslatable = c(
-                         "alias",
-                         "name",
-                         "keyword",
-                         "concept",
-                         "usage"
-                       )) {
+rd_flatten <- function(
+  Rd,
+  untranslatable = c(
+    "alias",
+    "name",
+    "keyword",
+    "concept",
+    "usage"
+  )
+) {
   # Convert every top-level element to text.
   list <- lapply(Rd, make_text, untranslatable = untranslatable)
   list <- Filter(function(x) !is.null(x), list)
@@ -59,8 +61,7 @@ make_text <- function(x, untranslatable) {
       text <- vapply(x, to_text, FUN.VALUE = character(1))
     }
     text <- remove_newlines(paste(text, collapse = ""))
-    list <- list(original = text,
-                 translation = NULL)
+    list <- list(original = text, translation = NULL)
 
     attr(list, "Rd_tag") <- tag
     return(list)
@@ -70,8 +71,7 @@ make_text <- function(x, untranslatable) {
     tag <- attr(y, "Rd_tag")
 
     if (tag == "\\item") {
-      description <- list(original = to_text(y[[2]]),
-                          translation = NULL)
+      description <- list(original = to_text(y[[2]]), translation = NULL)
       attr(description, "name") <- to_text(y[[1]])
       return(description)
     }
@@ -105,7 +105,9 @@ to_text <- function(x) {
   # #ifdef / #ifndef are two-argument list nodes; deparse them (like markup
   # macros) instead of returning x[[1]], which is a list and errored.
   is_ifdef <- !is.null(tag) && tag %in% c("#ifdef", "#ifndef")
-  if (!is_ifdef && (is.character(x) || !is.null(tag) && !startsWith(tag, "\\"))) {
+  if (
+    !is_ifdef && (is.character(x) || !is.null(tag) && !startsWith(tag, "\\"))
+  ) {
     return(x[[1]])
   }
   text <- as.character(setRd(x), deparse = TRUE)
@@ -113,7 +115,11 @@ to_text <- function(x) {
 }
 
 rd_tags <- function(help_db) {
-  tags <- vapply(help_db, function(x) attr(x, "Rd_tag"), FUN.VALUE = character(1))
+  tags <- vapply(
+    help_db,
+    function(x) attr(x, "Rd_tag"),
+    FUN.VALUE = character(1)
+  )
   gsub("\\\\", "", tags)
 }
 

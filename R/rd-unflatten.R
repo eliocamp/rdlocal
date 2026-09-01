@@ -12,8 +12,7 @@ rd_unflatten <- function(rd_flat) {
 list2rdtext <- function(x) {
   texts <- vapply(x, section2char, FUN.VALUE = character(1))
 
-  paste(paste0("\\", names(x), "{", texts, "}"),
-        collapse = "\n")
+  paste(paste0("\\", names(x), "{", texts, "}"), collapse = "\n")
 }
 
 section2char <- function(x) {
@@ -21,6 +20,5 @@ section2char <- function(x) {
     return(x)
   }
 
-  paste(paste0("\\item{", names(x), "}{", unlist(x), "}"),
-         collapse = "")
+  paste(paste0("\\item{", names(x), "}{", unlist(x), "}"), collapse = "")
 }

@@ -1,4 +1,9 @@
-.translateHelpFile <- function(rd, pkgname, file, language = Sys.getenv("LANGUAGE", "en")) {
+.translateHelpFile <- function(
+  rd,
+  pkgname,
+  file,
+  language = Sys.getenv("LANGUAGE", "en")
+) {
   if (is.null(language)) {
     return(rd)
   }
@@ -9,7 +14,10 @@
     return(rd)
   }
 
-  translations <- get("translations", envir = asNamespace(translation_modules[1]))[[name]]
+  translations <- get(
+    "translations",
+    envir = asNamespace(translation_modules[1])
+  )[[name]]
 
   if (is.null(translations)) {
     return(rd)

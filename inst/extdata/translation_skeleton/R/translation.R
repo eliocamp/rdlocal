@@ -14,7 +14,9 @@ translations <- NULL
 # translations/ directory would be stripped as non-standard on install.
 .onLoad <- function(libname, pkgname) {
   dir <- system.file("translations", package = pkgname)
-  if (!nzchar(dir)) return(invisible())
+  if (!nzchar(dir)) {
+    return(invisible())
+  }
   files <- list.files(dir, pattern = "\\.yaml$", full.names = TRUE)
   tr <- lapply(files, rd_flat_read)
   names(tr) <- tools::file_path_sans_ext(basename(files))

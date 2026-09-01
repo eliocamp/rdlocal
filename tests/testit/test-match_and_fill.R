@@ -16,40 +16,63 @@ assert("single-token fill (start / end / empty / multiline / regex-literal)", {
 })
 
 assert("multiple and adjacent tokens", {
-  (mf("a1b2c", "a{ISEXPR_0}b{ISEXPR_1}c", "A{ISEXPR_0}B{ISEXPR_1}C")$text == "A1B2C")
-  (mf("xVALy", "x{ISEXPR_0}{ISEXPR_1}y", "p{ISEXPR_0}{ISEXPR_1}q")$text == "pVALq")
+  (mf("a1b2c", "a{ISEXPR_0}b{ISEXPR_1}c", "A{ISEXPR_0}B{ISEXPR_1}C")$text ==
+    "A1B2C")
+  (mf("xVALy", "x{ISEXPR_0}{ISEXPR_1}y", "p{ISEXPR_0}{ISEXPR_1}q")$text ==
+    "pVALq")
 })
 
 assert("scaffold roundtrip: same scaffold as translation reproduces the live", {
-  (mf("Installed on Monday.", "Installed on {ISEXPR_0}.", "Installed on {ISEXPR_0}.")$text ==
-     "Installed on Monday.")
+  (mf(
+    "Installed on Monday.",
+    "Installed on {ISEXPR_0}.",
+    "Installed on {ISEXPR_0}."
+  )$text ==
+    "Installed on Monday.")
 })
 
 assert("no-match and NULL inputs fall back to live", {
   (mf("zzz", "a{ISEXPR_0}c", "A{ISEXPR_0}C")$text == "zzz")
-  (mf("a?c", "a{ISEXPR_0}b{ISEXPR_1}c", "A{ISEXPR_0}B{ISEXPR_1}C")$text == "a?c")
+  (mf("a?c", "a{ISEXPR_0}b{ISEXPR_1}c", "A{ISEXPR_0}B{ISEXPR_1}C")$text ==
+    "a?c")
   (mf("aXYd", "a{ISEXPR_0}c", "A{ISEXPR_0}C")$text == "aXYd")
   (mf("abc", NULL, "xyz")$text == "abc")
   (mf("abc", "abc", NULL)$text == "abc")
 })
 
 assert("#ifdef: active branch translated, inactive marker kept", {
-  (mf("pre SHOWN post", "pre {ISEXPR_0} post", "PRE {ISEXPR_0} POST",
-      list("0" = "ES"))$text == "PRE ES POST")
-  (mf("pre #ifdef windows not active post", "pre {ISEXPR_0} post", "PRE {ISEXPR_0} POST",
-      list("0" = "ES"))$text == "PRE #ifdef windows not active POST")
+  (mf(
+    "pre SHOWN post",
+    "pre {ISEXPR_0} post",
+    "PRE {ISEXPR_0} POST",
+    list("0" = "ES")
+  )$text ==
+    "PRE ES POST")
+  (mf(
+    "pre #ifdef windows not active post",
+    "pre {ISEXPR_0} post",
+    "PRE {ISEXPR_0} POST",
+    list("0" = "ES")
+  )$text ==
+    "PRE #ifdef windows not active POST")
 })
 
 assert("literal {{ISEXPR_n}} escaping", {
-  (mf("a {ISEXPR_0} b", "a {{ISEXPR_0}} b", "c {{ISEXPR_0}} d")$text == "c {ISEXPR_0} d")
-  (mf("v=VAL lit={ISEXPR_9}", "v={ISEXPR_0} lit={{ISEXPR_9}}",
-      "x={ISEXPR_0} y={{ISEXPR_9}}")$text == "x=VAL y={ISEXPR_9}")
+  (mf("a {ISEXPR_0} b", "a {{ISEXPR_0}} b", "c {{ISEXPR_0}} d")$text ==
+    "c {ISEXPR_0} d")
+  (mf(
+    "v=VAL lit={ISEXPR_9}",
+    "v={ISEXPR_0} lit={{ISEXPR_9}}",
+    "x={ISEXPR_0} y={{ISEXPR_9}}"
+  )$text ==
+    "x=VAL y={ISEXPR_9}")
 })
 
 assert("reason and distance metadata", {
   (mf("on Monday", "on {ISEXPR_0}", "el {ISEXPR_0}")$reason == "valid")
   (mf("on Monday", "on {ISEXPR_0}", "el {ISEXPR_0}")$distance == 0)
-  (mf("put at Tuesday", "put on {ISEXPR_0}", "puesto {ISEXPR_0}")$reason == "stale")
+  (mf("put at Tuesday", "put on {ISEXPR_0}", "puesto {ISEXPR_0}")$reason ==
+    "stale")
   (mf("put at Tuesday", "put on {ISEXPR_0}", "puesto {ISEXPR_0}")$distance > 0)
   (mf("on Monday", "on {ISEXPR_0}", NULL)$reason == "untranslated")
   (is.infinite(mf("on Monday", "on {ISEXPR_0}", NULL)$distance))

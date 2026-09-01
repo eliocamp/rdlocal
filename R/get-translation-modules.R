@@ -21,7 +21,11 @@ get_translation_modules <- function(package, language) {
   }
 
   # Filter for the language
-  translations <- translations[resolve_lang(translations[, "Language"], language), , drop = FALSE]
+  translations <- translations[
+    resolve_lang(translations[, "Language"], language),
+    ,
+    drop = FALSE
+  ]
 
   if (length(translations) == 0) {
     return(NULL)

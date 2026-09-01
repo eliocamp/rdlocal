@@ -22,4 +22,3 @@ path_component <- function(path, depth = 0) {
     return(path_component(dirname(path), depth = depth[1] - 1))
   }
 }
-
