@@ -261,6 +261,7 @@ copy_pkg_template <- function(path, rstudio_project = TRUE) {
       file.path(path, paste0(rstudio_project, ".Rproj"))
     )
   }
+  file.rename(file.path(path, "Rbuildignore"), file.path(path, ".Rbuildignore"))
   return(path)
 }
 
