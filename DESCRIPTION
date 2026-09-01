@@ -19,7 +19,8 @@ Depends:
 Imports:
     pkgload,
     yaml,
-    whisker
+    whisker,
+    remotes
 Suggests:
     testit,
     knitr,
