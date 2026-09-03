@@ -9,7 +9,8 @@ i18n_module_create(
   language,
   module_name = NULL,
   module_path = file.path(".", module_name),
-  rstudio_project = TRUE
+  rstudio_project = TRUE,
+  overwrite = FALSE
 )
 }
 \arguments{
@@ -24,6 +25,9 @@ with non-alphanumerics in \code{language} collapsed to \code{"."} (so \code{"en-
 \item{module_path}{Directory to create the module in.}
 
 \item{rstudio_project}{Whether to create an \code{.Rproj} file.}
+
+\item{overwrite}{If \code{TRUE}, delete an existing module at \code{module_path} before
+creating it. Intended for development, when the same module is regenerated repeatedly.}
 }
 \value{
 (invisibly) the module path.
