@@ -57,12 +57,17 @@ i18n_module_create <- function(
     module_path,
     rstudio_project = if (isTRUE(rstudio_project)) module_name else NULL
   )
+  
+  license <- get_package_license(package_path)
+  copy_license_file(package_path, module_path)
+  
   modify_description(
     module_path,
     module_name = module_name,
     package = package,
     version = version,
-    language = language
+    language = language,
+    license = license
   )
 
   macros <- tools::loadPkgRdMacros(package_path)
@@ -266,7 +271,8 @@ copy_pkg_template <- function(path, rstudio_project = TRUE) {
 }
 
 
-modify_description <- function(path, module_name, package, version, language) {
+modify_description <- function(path, module_name, package, version, language,
+                              license = NULL) {
   description_file <- file.path(path, "DESCRIPTION")
   description_template <- paste0(readLines(description_file), collapse = "\n")
 
@@ -275,10 +281,33 @@ modify_description <- function(path, module_name, package, version, language) {
     data = list(
       module_name = module_name,
       package_version = paste0(package, " (== ", version, ")"),
-      language = language
+      language = language,
+      license = license
     )
   )
   writeLines(description_text, description_file)
+}
+
+get_package_license <- function(package_path) {
+  description_file <- file.path(package_path, "DESCRIPTION")
+  tryCatch(
+    read.dcf(description_file, fields = "License")[[1]],
+    error = function(e) NULL
+  )
+}
+
+copy_license_file <- function(package_path, module_path) {
+  license_files <- c("LICENSE", "LICENSE.md", "LICENSE.txt", "LICENCE", "LICENCE.md")
+  
+  for (file in license_files) {
+    src_file <- file.path(package_path, file)
+    if (file.exists(src_file)) {
+      dest_file <- file.path(module_path, file)
+      file.copy(src_file, dest_file, overwrite = TRUE)
+      return(invisible(TRUE))
+    }
+  }
+  invisible(FALSE)
 }
 
 valid_package_name <- function(x) {
