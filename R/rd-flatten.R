@@ -42,6 +42,7 @@ rd_flat_class <- "rdlocal_rd_flat"
 
 make_text <- function(x, untranslatable) {
   tag <- attr(x, "Rd_tag")
+
   not_save <- c("COMMENT", "TEXT", paste0("\\", untranslatable))
   if (tag %in% not_save) {
     text <- vapply(x, to_text, FUN.VALUE = character(1))
@@ -95,6 +96,13 @@ to_text <- function(x) {
   if (length(x) == 0) {
     return("")
   }
+
+  # tag can be length zero.
+  if (identical(tag, "LIST")) {
+    text <- vapply(x, to_text, character(1))
+    return(paste(text, collapse = ""))
+  }
+
   # A USERMACRO node is a provenance marker that holds a copy of the macro's
   # (unsubstituted) body; the actual expansion follows as sibling nodes. Emitting
   # the marker too would duplicate the expansion (e.g. "GSoCGSoC") and leak raw

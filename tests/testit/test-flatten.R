@@ -33,3 +33,16 @@ assert("a user-defined macro expands exactly once (not doubled)", {
   )) ==
     1L)
 })
+
+# Issue 45 https://github.com/eliocamp/rdlocal/issues/45
+assert("double braces in title and others work", {
+  t <- tempfile()
+  r"(
+\name{curly}
+\title{{{curlycurly}}}
+\description{Description}
+)" |>
+    writeLines(t)
+
+  (rd_flatten(tools::parse_Rd(t))$title$original == "curlycurly")
+})
