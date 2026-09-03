@@ -53,12 +53,19 @@ translate <- function(original, translation) {
             live,
             "\\out{</details>}}{ (\u26A0 this translation may be out of date)}"
           )
-        } else if (section %in% c("examples", "title")) {
+        } else if (section == "title") {
           filled <- paste0(
             filled,
             "\\if{html}{\\out{<details style='display:inline'> <summary>} \U0001f310 \\out{</summary>} ",
             live,
             "\\out{</details>}}"
+          )
+        } else if (section == "examples") {
+          filled <- paste0(
+            filled,
+            "\\if{html}{\\out{</code></pre><details style='display:inline'><summary>\U0001f310</summary><pre><code class='language-R'>}}",
+            live,
+            "\\if{html}{\\out{</code></pre></details><pre><code class='language-R'>}}"
           )
         }
       }
