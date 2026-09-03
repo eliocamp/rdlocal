@@ -3,7 +3,7 @@
 This guide is for **R users** who want to read documentation in their
 own language.
 
-## The sort version
+## The short version
 
 There are 2 steps to get documentation in your language.
 
