@@ -29,6 +29,8 @@
 #'   `pkg.en.GB`); the real tag is kept in the module's `Language:` field.
 #' @param module_path Directory to create the module in.
 #' @param rstudio_project Whether to create an `.Rproj` file.
+#' @param overwrite If `TRUE`, delete an existing module at `module_path` before
+#'   creating it. Intended for development, when the same module is regenerated repeatedly.
 #'
 #' @return (invisibly) the module path.
 #' @export
@@ -37,7 +39,8 @@ i18n_module_create <- function(
   language,
   module_name = NULL,
   module_path = file.path(".", module_name),
-  rstudio_project = TRUE
+  rstudio_project = TRUE,
+  overwrite = FALSE
 ) {
   package <- get_package_name(package_path)
   version <- get_package_version(package_path)
@@ -55,8 +58,10 @@ i18n_module_create <- function(
 
   copy_pkg_template(
     module_path,
-    rstudio_project = if (isTRUE(rstudio_project)) module_name else NULL
+    rstudio_project = if (isTRUE(rstudio_project)) module_name else NULL,
+    overwrite = overwrite
   )
+  
   modify_description(
     module_path,
     module_name = module_name,
@@ -237,14 +242,32 @@ get_package_version <- function(package_path) {
   read.dcf(description_file, fields = "Version")[[1]]
 }
 
-copy_pkg_template <- function(path, rstudio_project = TRUE) {
-  dir.create(path, recursive = TRUE, showWarnings = FALSE)
-
+copy_pkg_template <- function(path, rstudio_project = TRUE, overwrite = FALSE) {
+  
   empty <- length(list.files(path)) == 0
-  if (!empty) {
-    stop("Path to module exists and it's not empty.")
+  
+  if (isTRUE(overwrite) && dir.exists(path) && !empty) {
+    
+    if(!dir.exists(file.path(path, "inst", "translations"))) {
+      stop(
+        path,
+        " is not empty and does not look like a translation module; ",
+        "refusing to overwrite."
+      )
+    }
+    
+    unlink(path, recursive = TRUE)
   }
-
+  
+  dir.create(path, recursive = TRUE, showWarnings = FALSE)
+  
+  if(!overwrite){
+    if (!empty) {
+      stop("Path to module exists and it's not empty.",
+           "Use overwrite = TRUE to replace it")
+    }
+  }
+  
   skeleton <- system.file(
     "extdata",
     "translation_skeleton",
@@ -252,7 +275,7 @@ copy_pkg_template <- function(path, rstudio_project = TRUE) {
   ) |>
     list.files(full.names = TRUE) |>
     file.copy(path, recursive = TRUE)
-
+  
   if (is.null(rstudio_project)) {
     file.remove(file.path(path, "skeleton.Rproj"))
   } else {
