@@ -20,7 +20,8 @@ i18n_module_create(
   language,
   module_name = NULL,
   module_path = file.path(".", module_name),
-  rstudio_project = TRUE
+  rstudio_project = TRUE,
+  overwrite = FALSE
 )
 ```
 
@@ -47,6 +48,12 @@ i18n_module_create(
 - rstudio_project:
 
   Whether to create an `.Rproj` file.
+
+- overwrite:
+
+  If `TRUE`, delete an existing module at `module_path` before creating
+  it. Intended for development, when the same module is regenerated
+  repeatedly.
 
 ## Value
 

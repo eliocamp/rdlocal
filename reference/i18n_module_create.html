@@ -72,7 +72,8 @@ per install), so the translator knows what a <code>{ISEXPR_i}</code> stands for.
 <span>  <span class="va">language</span>,</span>
 <span>  module_name <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  module_path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"."</span>, <span class="va">module_name</span><span class="op">)</span>,</span>
-<span>  rstudio_project <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  rstudio_project <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -100,6 +101,11 @@ with non-alphanumerics in <code>language</code> collapsed to <code>"."</code> (s
 
 <dt id="arg-rstudio-project">rstudio_project<a class="anchor" aria-label="anchor" href="#arg-rstudio-project"></a></dt>
 <dd><p>Whether to create an <code>.Rproj</code> file.</p></dd>
+
+
+<dt id="arg-overwrite">overwrite<a class="anchor" aria-label="anchor" href="#arg-overwrite"></a></dt>
+<dd><p>If <code>TRUE</code>, delete an existing module at <code>module_path</code> before
+creating it. Intended for development, when the same module is regenerated repeatedly.</p></dd>
 
 </dl></div>
     <div class="section level2">
