@@ -39,7 +39,7 @@ Setting the LANGAUGE environmental variable to "es" will change your R language.
 
 ```r
 library(rdlocal)
-Sys.setenv(LANGUAGE = "es")
+Sys.setLanguage("es")
 ```
 
 Now `base::mean()`'s help page will be displayed in Spanish.
