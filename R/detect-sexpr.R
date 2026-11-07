@@ -131,8 +131,32 @@
   is.list(x) && length(x) > 0 && all(vapply(x, .is_simple, logical(1)))
 }
 
+
+rm_comments <- function(rd) {
+  browser(expr = length(rd) == 1)
+  tags <- rd_tags(rd)
+  no_comments <- which(tags != "COMMENT" | is.na(tags))
+
+  # The .[ method strips attributes
+  attributes_bk <- attributes(rd)
+  rd <- rd[no_comments]
+
+  # Also remove comments recursively for the elements with nested
+  # elements
+  deep <- which(lengths(rd) != 1)
+  if (length(deep) > 0) {
+    rd[deep] <- lapply(rd[deep], rm_comments)
+  }
+
+  attributes(rd) <- attributes_bk
+  return(rd)
+}
+
 # Per-section scaffolds from a source + baked parsed Rd (\arguments -> per \item).
 detect_scaffolds <- function(src_rd, baked_rd) {
+  src_rd <- rm_comments(src_rd)
+  baked_rd <- rm_comments(baked_rd)
+
   records <- .collect_sexpr_markers(src_rd)
   src_flat <- rd_flatten(src_rd)
   inst_flat <- rd_flatten(baked_rd)
