@@ -42,7 +42,7 @@ language.
 ``` r
 
 library(rdlocal)
-Sys.setenv(LANGUAGE = "es")
+Sys.setLanguage("es")
 ```
 
 Now [`base::mean()`](https://rdrr.io/r/base/mean.html)’s help page will
