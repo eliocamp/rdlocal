@@ -133,7 +133,6 @@
 
 
 rm_comments <- function(rd) {
-  browser(expr = length(rd) == 1)
   tags <- rd_tags(rd)
   no_comments <- which(tags != "COMMENT" | is.na(tags))
 
