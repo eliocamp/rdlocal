@@ -2,8 +2,10 @@ Package: rdlocal
 Title: Adds Support por Multilingual Help Pages
 Version: 0.0.0.9000
 Authors@R: c(
-    person("Elio", "Campitelli", , "elio.campitelli@cima.fcen.uba.ar", role = c("cre", "aut"),
+    person("Elio", "Campitelli", , "elio.campitelli@monash.edu", role = c("cre", "aut"),
            comment = c(ORCID = "0000-0002-7742-9230")),
+    person("Paola", "Corrales", , "paola.corrales@anu.edu.au", role = c("aut"),
+           comment = c(ORCID = "0000-0003-1923-9129")),
     person("Aditya", "Bansal", , "aditya2017rks@gmail.com", role = "aut"),
     person("Heather", "Turner", role = "ctb",
            comment = c(ORCID = "0000-0002-1256-3375"))

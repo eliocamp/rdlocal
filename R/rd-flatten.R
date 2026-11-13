@@ -125,7 +125,7 @@ to_text <- function(x) {
 rd_tags <- function(help_db) {
   tags <- vapply(
     help_db,
-    function(x) attr(x, "Rd_tag"),
+    function(x) attr(x, "Rd_tag") %||% NA_character_,
     FUN.VALUE = character(1)
   )
   gsub("\\\\", "", tags)

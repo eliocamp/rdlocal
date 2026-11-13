@@ -1,0 +1,16 @@
+Package: rdshowcase
+Title: Showcase of R's documentation features
+Version: 0.1.0
+Authors@R: c(
+   person("Aditya", "Bansal", , "aditya2017rks@gmail.com", role = c("cre", "aut")),
+   person("Elio", "Campitelli", , "elio.campitelli@cima.fcen.uba.ar", role = c("aut"),
+           comment = c(ORCID = "0000-0002-7742-9230"))
+  )
+Description: Provides showcase of documentation features to use for testing.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Config/testthat/edition: 3
+RdMacros:
+   newmacro
+Config/roxygen2/version: 8.1.0
