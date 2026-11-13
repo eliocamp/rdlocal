@@ -62,12 +62,17 @@ i18n_module_create <- function(
     overwrite = overwrite
   )
   
+  license <- get_package_license(package_path)
+  license_file_copied <- copy_license_file(package_path, module_path)
+  
   modify_description(
     module_path,
     module_name = module_name,
     package = package,
     version = version,
-    language = language
+    language = language,
+    license = license,
+    license_file_copied = license_file_copied
   )
 
   macros <- tools::loadPkgRdMacros(package_path)
@@ -289,19 +294,57 @@ copy_pkg_template <- function(path, rstudio_project = TRUE, overwrite = FALSE) {
 }
 
 
-modify_description <- function(path, module_name, package, version, language) {
+modify_description <- function(path, module_name, package, version, language,
+                              license = NULL, license_file_copied = FALSE) {
   description_file <- file.path(path, "DESCRIPTION")
   description_template <- paste0(readLines(description_file), collapse = "\n")
+  
+  if (is.null(license)) {
+    if (license_file_copied) {
+      license <- "Inherited from source package"
+    } else {
+      license <- "Not Specified"
+    }
+  }
 
   description_text <- whisker::whisker.render(
     description_template,
     data = list(
       module_name = module_name,
       package_version = paste0(package, " (== ", version, ")"),
-      language = language
+      language = language,
+      license = license
     )
   )
+  
+  # Remove License: NA lines if no license field should be present
+  if (is.na(license)) {
+    description_text <- gsub("License: NA\n?", "", description_text)
+  }
+  
   writeLines(description_text, description_file)
+}
+
+get_package_license <- function(package_path) {
+  description_file <- file.path(package_path, "DESCRIPTION")
+  tryCatch(
+    read.dcf(description_file, fields = "License")[[1]],
+    error = function(e) NULL
+  )
+}
+
+copy_license_file <- function(package_path, module_path) {
+  license_files <- c("LICENSE", "LICENSE.md", "LICENSE.txt", "LICENCE", "LICENCE.md")
+  
+  for (file in license_files) {
+    src_file <- file.path(package_path, file)
+    if (file.exists(src_file)) {
+      dest_file <- file.path(module_path, file)
+      file.copy(src_file, dest_file, overwrite = TRUE)
+      return(TRUE)
+    }
+  }
+  return(FALSE)
 }
 
 valid_package_name <- function(x) {
