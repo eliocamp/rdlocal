@@ -24,14 +24,14 @@ for background) and is still experimental.
 
 Install this package:
 
-``` r
+```r
 pak::pak("eliocamp/rdlocal")
 ```
 
 Next install a translation module. 
 The [base.es](https://github.com/eliocamp/base.es) package hosts translations for `base::mean()` as an example, install it with:
 
-``` r
+```r
 pak::pak("eliocamp/base.es")
 ```
 
