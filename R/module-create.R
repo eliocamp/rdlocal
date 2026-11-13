@@ -61,11 +61,14 @@ i18n_module_create <- function(
     rstudio_project = if (isTRUE(rstudio_project)) module_name else NULL,
     overwrite = overwrite
   )
-  
-  create_readme_file(get_package_readme(package, language), module_path)
+
+  create_readme_file(
+    get_package_readme(module_name, package, language),
+    module_path
+  )
   license <- get_package_license(package_path)
   license_file_copied <- copy_license_file(package_path, module_path)
-  
+
   modify_description(
     module_path,
     module_name = module_name,
@@ -249,31 +252,31 @@ get_package_version <- function(package_path) {
 }
 
 copy_pkg_template <- function(path, rstudio_project = TRUE, overwrite = FALSE) {
-  
   empty <- length(list.files(path)) == 0
-  
+
   if (isTRUE(overwrite) && dir.exists(path) && !empty) {
-    
-    if(!dir.exists(file.path(path, "inst", "translations"))) {
+    if (!dir.exists(file.path(path, "inst", "translations"))) {
       stop(
         path,
         " is not empty and does not look like a translation module; ",
         "refusing to overwrite."
       )
     }
-    
+
     unlink(path, recursive = TRUE)
   }
-  
+
   dir.create(path, recursive = TRUE, showWarnings = FALSE)
-  
-  if(!overwrite){
+
+  if (!overwrite) {
     if (!empty) {
-      stop("Path to module exists and it's not empty.",
-           "Use overwrite = TRUE to replace it")
+      stop(
+        "Path to module exists and it's not empty.",
+        "Use overwrite = TRUE to replace it"
+      )
     }
   }
-  
+
   skeleton <- system.file(
     "extdata",
     "translation_skeleton",
@@ -281,7 +284,7 @@ copy_pkg_template <- function(path, rstudio_project = TRUE, overwrite = FALSE) {
   ) |>
     list.files(full.names = TRUE) |>
     file.copy(path, recursive = TRUE)
-  
+
   if (is.null(rstudio_project)) {
     file.remove(file.path(path, "skeleton.Rproj"))
   } else {
@@ -295,12 +298,19 @@ copy_pkg_template <- function(path, rstudio_project = TRUE, overwrite = FALSE) {
 }
 
 
-modify_description <- function(path, module_name, package, version, language,
-                              readme = NULL,
-                              license = NULL, license_file_copied = FALSE) {
+modify_description <- function(
+  path,
+  module_name,
+  package,
+  version,
+  language,
+  readme = NULL,
+  license = NULL,
+  license_file_copied = FALSE
+) {
   description_file <- file.path(path, "DESCRIPTION")
   description_template <- paste0(readLines(description_file), collapse = "\n")
-  
+
   if (is.null(license)) {
     if (license_file_copied) {
       license <- "Inherited from source package"
@@ -319,18 +329,26 @@ modify_description <- function(path, module_name, package, version, language,
       license = license
     )
   )
-  
+
   # Remove License: NA lines if no license field should be present
   if (is.na(license)) {
     description_text <- gsub("License: NA\n?", "", description_text)
   }
-  
+
   writeLines(description_text, description_file)
 }
 
-get_package_readme <- function(package, language) {
-  data <- list("Package" = package, "Language" = language)
-  template_path <- system.file("templates", "package-readme", package = "rdlocal")
+get_package_readme <- function(module_name, package, language) {
+  data <- list(
+    module_name = module_name,
+    package = package,
+    language = language
+  )
+  template_path <- system.file(
+    "templates",
+    "package-readme.md",
+    package = "rdlocal"
+  )
   template_content <- paste0(readLines(template_path), collapse = "\n")
   whisker::whisker.render(template_content, data)
 }
@@ -340,7 +358,7 @@ create_readme_file <- function(readme, module_path) {
     writeLines(readme, file.path(module_path, "README.md"))
   }
 }
-               
+
 get_package_license <- function(package_path) {
   description_file <- file.path(package_path, "DESCRIPTION")
   tryCatch(
@@ -350,8 +368,14 @@ get_package_license <- function(package_path) {
 }
 
 copy_license_file <- function(package_path, module_path) {
-  license_files <- c("LICENSE", "LICENSE.md", "LICENSE.txt", "LICENCE", "LICENCE.md")
-  
+  license_files <- c(
+    "LICENSE",
+    "LICENSE.md",
+    "LICENSE.txt",
+    "LICENCE",
+    "LICENCE.md"
+  )
+
   for (file in license_files) {
     src_file <- file.path(package_path, file)
     if (file.exists(src_file)) {
