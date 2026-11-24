@@ -73,7 +73,63 @@ description:
 | `spans` | example of what each `{ISEXPR_i}` held at generation time | **no** (a hint) |
 | `ifdef` | on some pages; one entry per platform-specific branch | **yes** |
 
-## 4. The one rule: keep the `{ISEXPR_…}` placeholders
+### Keep the YAML structure
+
+YAML uses spaces to show which fields belong together. Use spaces rather than
+tabs, and keep fields at the same level, such as `original`, `translation`, and
+`spans`, aligned. The `|` starts a multiline value, so every line of translated
+text below it must be indented farther than `translation`. Incorrect indentation
+can prevent the YAML file from loading or silently place a field at the wrong
+level.
+
+For example, this translation has the correct structure:
+
+```yaml
+description:
+  original: Hello
+  translation: |
+    Hola
+    Segunda línea
+```
+
+### Choose how YAML handles line breaks
+
+The symbol after `translation:` controls how YAML handles line breaks. Use `|`
+when the translated help text should keep the same line structure. Use `>` only
+when the lines should be joined into a paragraph.
+
+The optional `-` and `+` are called chomping indicators. They control whether
+YAML removes or preserves line breaks at the end of the value.
+
+| Syntax | Effect |
+|---|---|
+| `|` | Preserves line breaks and keeps one final newline |
+| `>` | Replaces most line breaks with spaces and keeps one final newline |
+| `|-` | Preserves line breaks but removes final newlines |
+| `|+` | Preserves line breaks and all trailing newlines |
+
+For example, this value is read as `Esta es una sola línea.\n`:
+
+```yaml
+translation: >
+  Esta es una
+  sola línea.
+```
+
+### Check a translation file
+
+Before installing the module, check that the edited YAML file can be read:
+
+```r
+translation <- yaml::read_yaml("inst/translations/sexpr_install.yaml")
+str(translation)
+```
+
+An indentation or syntax error will stop `yaml::read_yaml()` with an error.
+A file can still have the wrong structure even when it loads successfully, so
+check that `translation` appears inside the expected entry.
+
+## 4. Keep the `{ISEXPR_…}` placeholders
 
 Text that changes every install (a version, a date, a generated list) is
 replaced by a placeholder like `{ISEXPR_0}`. **Copy each placeholder into your
